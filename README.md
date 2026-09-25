@@ -23,8 +23,9 @@ class KlimKassymkhan:
     alias     = "overloooooord"
     location  = "Almaty, Kazakhstan 🇰🇿"
     study     = "KBTU · Software Engineering · 3rd-4th year"
-    focus     = ["backend & APIs", "explainable recommenders", "AI-powered products", "hackathons"]
-    stack     = ["Python", "Django / DRF", "FastAPI", "TypeScript", "Angular", "PostgreSQL", "Docker"]
+    focus     = ["backend & APIs", "explainable recommenders", "AI products", "hackathons"]
+    backend   = ["Python", "Django / DRF", "FastAPI", "PostgreSQL", "Redis", "Docker"]
+    frontend  = ["TypeScript", "Angular", "React", "Tailwind"]
     now       = "shipping Flavor Tree for OneIdea Championship 2026 × Efes Kazakhstan"
 
     def motto(self) -> str:
