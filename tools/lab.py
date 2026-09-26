@@ -164,8 +164,44 @@ def client_grid(T):
            '')
     write('clients', T, D.svg(W, H, '\n'.join(b), alt))
 
+def divider(T):
+    """katana divider between chapters: blade across the column, a glint that runs along it"""
+    W, H = 900, 54; D = Doc(); dark = T['name'] == 'dark'
+    style = '@keyframes dg{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(720px) skewX(-30deg)}}.dg{animation:dg 3s cubic-bezier(.4,0,.2,1) infinite}'
+    b = [f'<line x1="0" y1="27" x2="900" y2="27" stroke="{AKA}" stroke-opacity=".25"/>',
+         f'<g transform="translate(40 27)">{katana(T, 820, "dg")}</g>',
+         D.text('斬', 892, 40, 22, 'sans900', T['wine'] if dark else AKA, anchor='end', opacity=.9 if dark else .5)]
+    write('divider', T, D.svg(W, H, '\n'.join(b), 'Katana divider', style))
+
+def katana_panel(T):
+    """next-episode companion: a katana over the red sun, focus lines, blood drops; replaces the external GIF"""
+    W = 448; H = round(W * (0.5 * 280 / 498) / 0.498); D = Doc(); dark = T['name'] == 'dark'
+    SX, SY, SR = 250, 132, 92; rnd = random.Random(21)
+    style = ('@keyframes kp{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(300px) skewX(-30deg)}}.kp{animation:kp 2.2s cubic-bezier(.2,.7,.2,1) infinite}'
+             + ''.join(f'@keyframes dr{i}{{0%{{transform:translateY(0);opacity:0}}10%{{opacity:1}}100%{{transform:translateY({70+i*20}px);opacity:0}}}}.dr{i}{{animation:dr{i} {2.4+i*.7:.1f}s ease-in {i*.9:.1f}s infinite}}' for i in range(3)))
+    b = [f'<defs><clipPath id="pf"><rect width="{W}" height="{H}"/></clipPath></defs>',
+         f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>', '<g clip-path="url(#pf)">',
+         dots(halftone_ring(SX, SY, SR, 120, 0, W, 0, H, 7, 2.2), T['tone'], .5 if dark else .35)]
+    ls = []
+    for i in range(40):
+        a = math.radians(rnd.uniform(0, 360)); r1 = rnd.uniform(SR + 10, SR + 40); r2 = 330
+        ls.append(f'<line x1="{SX+r1*math.cos(a):.0f}" y1="{SY+r1*math.sin(a):.0f}" x2="{SX+r2*math.cos(a):.0f}" y2="{SY+r2*math.sin(a):.0f}" stroke-width="{rnd.uniform(.6,2):.1f}"/>')
+    b.append(f'<g stroke="{AKA}" opacity=".55">{"".join(ls)}</g>')
+    b.append(f'<circle cx="{SX}" cy="{SY}" r="{SR}" fill="{AKA}"/>')
+    b.append(D.text('斬', W - 16, H - 18, 96, 'sans900', T['wine'], anchor='end', opacity=T['wine_op'] * 1.1))
+    b.append(f'<g transform="translate(36 {H-26}) rotate(-38)">{katana(T, 400, "kp")}</g>')
+    for i, (dx, dy) in enumerate([(300, 96), (322, 78), (284, 112)]):
+        b.append(f'<path class="dr{i}" d="M{dx} {dy} c-3 5 -3 9 0 11 c3 -2 3 -6 0 -11z" fill="{T["hot"]}"/>')
+    b.append('</g>')
+    b.append(D.text('一刀', 24, 40, 24, 'sans900', T['text'], ls=2))
+    b.append(D.text('ONE CUT · SHIPPED', 24, 58, 10.5, 'mono700', T['akatext'], ls=3))
+    b.append(f'<rect x="1" y="1" width="{W-2}" height="{H-2}" fill="none" stroke="{T["frame"]}" stroke-opacity="{T["frame_op"]}" stroke-width="2"/>')
+    write('katana', T, D.svg(W, H, '\n'.join(b), 'A katana drawn across the red sun, focus lines, three drops', style))
+
 if __name__ == '__main__':
     for T in (DARK, LIGHT):
+        divider(T)
+        katana_panel(T)
         auto_panel(T)
         ops_panel(T)
         client_grid(T)

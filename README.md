@@ -13,7 +13,7 @@ Final years of Software Engineering at KBTU, Almaty. Three years of building Pyt
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/sheet.svg"><source media="(prefers-color-scheme: light)" srcset="assets/sheet-light.svg"><img src="assets/sheet.svg" width="100%" alt="Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, 18 public repositories, 850 plus tests. Passive: SEO and public speaking, several years each; account automation on Camoufox and curl_cffi. Snapshot September 2026."></picture>
 
-<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider.svg"><source media="(prefers-color-scheme: light)" srcset="assets/divider-light.svg"><img src="assets/divider.svg" width="100%" alt="Katana divider"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-02.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-02-light.svg"><img src="assets/chapter-02.svg" width="100%" alt="Chapter 2: Flavor Tree"></picture>
 
@@ -44,7 +44,7 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <sub>InVision U was a team of three (with Ilyas Aitkhozha and Denis): 186 commits, 49 mine. The latest commit dropped the backend from the tree, so the full source with backend and ML lives at <a href="https://github.com/overloooooord/indrive/tree/3c30480">3c30480</a>. SMM Radar is my own product and has no public repo yet. Scores in InVision U track a candidate's growth trajectory, not a snapshot of grades.</sub>
 
-<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider.svg"><source media="(prefers-color-scheme: light)" srcset="assets/divider-light.svg"><img src="assets/divider.svg" width="100%" alt="Katana divider"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-04.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-04-light.svg"><img src="assets/chapter-04.svg" width="100%" alt="Chapter 4: automation"></picture>
 
@@ -68,7 +68,7 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <sub>Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. Two front ends with public links; the rest of the client work sits in private repos.</sub>
 
-<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider.svg"><source media="(prefers-color-scheme: light)" srcset="assets/divider-light.svg"><img src="assets/divider.svg" width="100%" alt="Katana divider"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-07.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-07-light.svg"><img src="assets/chapter-07.svg" width="100%" alt="Chapter 7: contribution log"></picture>
 
@@ -83,7 +83,7 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-next.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-next-light.svg"><img src="assets/chapter-next.svg" width="100%" alt="Next episode: contact"></picture>
 
 <p>
-<img src="https://media.tenor.com/4m_S9id1oYkAAAAC/red-katana.gif" width="50%" alt="A katana drawn against a red sky"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/next-episode.svg"><source media="(prefers-color-scheme: light)" srcset="assets/next-episode-light.svg"><img src="assets/next-episode.svg" width="49.8%" alt="Next episode needs a party: internships, freelance backend work, hackathon squads, Almaty or remote. Django, FastAPI, Angular, Telegram bots, or wiring Claude into a real product. Fastest reply on Telegram."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/katana.svg"><source media="(prefers-color-scheme: light)" srcset="assets/katana-light.svg"><img src="assets/katana.svg" width="50%" alt="A katana drawn across the red sun, focus lines, three drops"></picture><picture><source media="(prefers-color-scheme: dark)" srcset="assets/next-episode.svg"><source media="(prefers-color-scheme: light)" srcset="assets/next-episode-light.svg"><img src="assets/next-episode.svg" width="49.8%" alt="Next episode needs a party: internships, freelance backend work, hackathon squads, Almaty or remote. Django, FastAPI, Angular, Telegram bots, or wiring Claude into a real product. Fastest reply on Telegram."></picture>
 </p>
 
 <p>

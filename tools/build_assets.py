@@ -71,6 +71,30 @@ def halftone_ring(cx, cy, r0, spread, x0, x1, y0, y1, step, rmax, avoid=None):
             if r >= .4: pts.append((xx, y, r))
     return pts
 
+# ------------------------------------------------------------------ katana (local coords: handle at x=0, tip at x=L, blade along +x)
+def katana(T, L=420, glint='', hamon=True):
+    """A drawn katana: kashira, ito-wrapped tsuka, tsuba, habaki, curved blade with shinogi line and hamon, kissaki tip."""
+    dark = T['name'] == 'dark'
+    paper = PAPER if dark else '#fbf7f0'; ink = INK; steel = paper
+    H0 = 100; mid = (H0 + L) / 2; tip = L
+    blade = (f'M{H0} 6.5 L{H0} -4 Q{mid} -10 {tip-46} -7.5 L{tip} -1 L{tip-40} 6 Q{mid} 9 {H0} 6.5 Z')
+    g = [f'<path d="{blade}" fill="{steel}" stroke="{ink}" stroke-width="1.2" stroke-linejoin="round"/>',
+         f'<path d="M{H0} 1 Q{mid} -1.5 {tip-46} -1" fill="none" stroke="{AKA}" stroke-width="1" opacity=".75"/>']
+    if hamon:
+        pts = ' '.join(f'{x:.0f} {5.2 + (1.6 if i % 2 else 0):.1f}' for i, x in enumerate(range(H0 + 8, tip - 48, 14)))
+        g.append(f'<polyline points="{pts}" fill="none" stroke="{AKA}" stroke-width=".8" opacity=".45"/>')
+    if glint:
+        g.append(f'<clipPath id="kb"><path d="{blade}"/></clipPath>')
+        g.append(f'<g clip-path="url(#kb)"><rect class="{glint}" x="{H0}" y="-12" width="34" height="24" fill="{paper if dark else "#ffffff"}" opacity=".85" transform="skewX(-30)"/></g>')
+    # habaki, tsuba, tsuka, kashira
+    g.append(f'<rect x="{H0-2}" y="-5.5" width="10" height="12" fill="{AKA}"/>')
+    g.append(f'<rect x="88" y="-14" width="9" height="28" rx="3" fill="{ink}" stroke="{AKA}" stroke-width="1.5"/>')
+    g.append(f'<rect x="4" y="-7" width="84" height="14" rx="3" fill="{ink}" stroke="{AKA}" stroke-width="1.2"/>')
+    d = ''.join(f'<path d="M{x} 0 l7 -6 l7 6 l-7 6 z"/>' for x in range(10, 82, 14))
+    g.append(f'<g fill="{paper}" opacity=".9">{d}</g>')
+    g.append(f'<rect x="0" y="-7.5" width="6" height="15" rx="2" fill="{AKA}"/>')
+    return ''.join(g)
+
 # ------------------------------------------------------------------ hero poster
 def hero(T):
     W, H = 900, 320; SX, SY, SR = 668, 158, 118; rnd = random.Random(7); D = Doc(); dark = T['name'] == 'dark'
@@ -78,7 +102,8 @@ def hero(T):
              '@keyframes fall{0%{transform:translate(0,0) rotate(0deg);opacity:0}8%{opacity:.8}92%{opacity:.8}100%{transform:translate(-150px,300px) rotate(320deg);opacity:0}}'
              + ''.join(f'.p{i}{{animation:fall {7+i*1.3:.1f}s linear {i*1.7:.1f}s infinite}}' for i in range(6))
              + f'@keyframes shimmer{{0%,100%{{opacity:{.18 if dark else .22}}}50%{{opacity:{.5 if dark else .55}}}}}'
-             + ''.join(f'.l{i}{{animation:shimmer {3+(i%4)*.9:.1f}s ease-in-out {i*.37:.2f}s infinite}}' for i in range(8)))
+             + ''.join(f'.l{i}{{animation:shimmer {3+(i%4)*.9:.1f}s ease-in-out {i*.37:.2f}s infinite}}' for i in range(8))
+             + '@keyframes kg{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(340px) skewX(-30deg)}}.kg{animation:kg 1.6s cubic-bezier(.2,.7,.2,1) .6s infinite;animation-delay:.6s}')
     b = [f'<defs><linearGradient id="rule" x1="0" x2="1"><stop offset="0" stop-color="{T["aka"]}"/><stop offset="1" stop-color="{T["aka"]}" stop-opacity="0"/></linearGradient>'
          f'<clipPath id="fr"><rect width="{W}" height="{H}"/></clipPath></defs>',
          f'<rect width="{W}" height="{H}" fill="{T["bg"]}"/>', '<g clip-path="url(#fr)">']
@@ -100,8 +125,9 @@ def hero(T):
             continue
         lines.append(f'<line class="l{i%8}" x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" stroke-width="{rnd.uniform(.7,2.2):.1f}"/>')
     b.append(f'<g stroke="{T["aka"]}" stroke-linecap="round">{"".join(lines)}</g>')
-    # the sun: one flat disc, poster style
+    # the sun: one flat disc, poster style, with a katana drawn across it
     b.append(f'<circle cx="{SX}" cy="{SY}" r="{SR}" fill="{T["aka"]}"/>')
+    b.append(f'<g transform="translate(518 318) rotate(-44)">{katana(T, 420, "kg")}</g>')
     # katakana name: knockout, red offset print, face
     kx, ky, ks = 54, 214, 150
     b.append(D.text('クリム', kx, ky, ks, 'sans900', T['bg'], ls=-6, extra=f' stroke="{T["bg"]}" stroke-width="{14/ks*1000:.0f}" stroke-linejoin="round"'))
@@ -146,7 +172,9 @@ def ribbon(T):
 # ------------------------------------------------------------------ chapter strips
 def chapter(T, name, kanji, title, sub, label):
     W, H = 900, 56; D = Doc(); dark = T['name'] == 'dark'
+    style = '@keyframes cut{0%{transform:translateX(-160px)}100%{transform:translateX(1100px)}}.cut{animation:cut 1.1s cubic-bezier(.3,0,.2,1) .2s both}'
     b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
+         f'<rect class="cut" x="0" y="-10" width="3" height="76" fill="{T["text"]}" opacity=".7" transform="skewX(-28)"/>',
          dots(halftone_x(600, 900, 3, 56, 7, 1.6), T['tone'], .3 if dark else .2),
          tab(0, 0, 124, H, AKA), D.text(kanji, 62, 35, 19, 'sans900', PAPER, ls=1, anchor='middle'),
          D.text(title, 160, 35, 16, 'sans900', T['text'], ls=5)]
@@ -156,7 +184,7 @@ def chapter(T, name, kanji, title, sub, label):
     b.append(D.text(sub, 872, 34, 11.5, 'mono500', T['muted'], ls=ls, anchor='end'))
     b.append(f'<rect x="0" y="{H-2}" width="{W}" height="2" fill="{AKA}"/>')
     b.append(f'<rect x="0" y="0" width="{W}" height="1" fill="{T["text"]}" opacity="{.18 if dark else .9}"/>')
-    write(f'chapter-{name}', T, D.svg(W, H, '\n'.join(b), label))
+    write(f'chapter-{name}', T, D.svg(W, H, '\n'.join(b), label, style))
 
 # ------------------------------------------------------------------ portrait: ink silhouette against a flat red sun
 SILHOUETTE = (  # side profile facing right in a 200x200 box; hair swept back by the wind
