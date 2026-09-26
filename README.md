@@ -62,11 +62,11 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: client work"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: frontend"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/clients.svg"><source media="(prefers-color-scheme: light)" srcset="assets/clients-light.svg"><img src="assets/clients.svg" width="100%" alt="Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. "></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/clients.svg"><source media="(prefers-color-scheme: light)" srcset="assets/clients-light.svg"><img src="assets/clients.svg" width="100%" alt="Frontend. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. "></picture>
 
-<sub>Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. Both sites belong to the clients, so the repos stay private.</sub>
+<sub>Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. Two front ends with public links; the rest of the client work sits in private repos.</sub>
 
 <br>
 

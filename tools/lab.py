@@ -159,7 +159,7 @@ def client_grid(T):
         if i < len(CLIENTS) - 2: b.append(f'<line x1="{x+54}" y1="{y+RH-6:.1f}" x2="{x+CW-18}" y2="{y+RH-6:.1f}" stroke="{T["line"]}" stroke-width="1.2"/>')
     b.append(f'<line x1="{CW}" y1="18" x2="{CW}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
     b.append(frame(W, H, T, 1, 2))
-    alt = ('Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. '
+    alt = ('Frontend. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. '
            'SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. '
            '')
     write('clients', T, D.svg(W, H, '\n'.join(b), alt))
@@ -171,5 +171,5 @@ if __name__ == '__main__':
         client_grid(T)
         lab_panel(T)
         chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 4: automation')
-        chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  SHADE CREATIVE PEOPLE CLUB', 'Chapter 6: client work')
+        chapter(T, '06', '第六話', 'FRONTEND', 'FINANCE BRIDGE  ·  SHADE CREATIVE PEOPLE CLUB  ·  REACT  ·  VITE  ·  TAILWIND', 'Chapter 6: frontend')
         chapter(T, '05', '第五話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 5: in the lab')
