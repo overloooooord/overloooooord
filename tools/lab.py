@@ -141,12 +141,10 @@ def ops_panel(T):
 CLIENTS = [
     ('Finance Bridge', 'LIVE', 'Landing for an accounting firm in Kazakhstan.', 'REACT 19 · VITE 7 · TAILWIND 4 · TIKTOK EVENTS API'),
     ('SHADE Creative People Club', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts.', 'REACT · VITE · TAILWIND 4 · FRAMER MOTION · QR'),
-    ('rdrightnow.com', 'PRIVATE REPO', 'Corporate site with an Azure Functions contact form.', 'AZURE STATIC WEB APPS · FUNCTIONS · ACS EMAIL'),
-    ('Fara Ideal LED', 'PRIVATE REPO', 'Landing with a Telegram lead form and a PDF proposal.', 'HTML / JS · NODE · VERCEL'),
 ]
 
 def client_grid(T):
-    W, H = 900, 212; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2; RH = (H - 20) / 2
+    RH = 96; rows = (len(CLIENTS) + 1) // 2; W, H = 900, 20 + rows * RH; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2
     b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
          dots(halftone_x(W - 150, W, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)]
     for i, (name, tag, desc, tech) in enumerate(CLIENTS):
@@ -158,12 +156,12 @@ def client_grid(T):
         b.append(D.text(desc, x + 54, y + 42, 12.5, 'sans400', T['text'], opacity=.84))
         b.append(D.text(tech, x + 54, y + 60, 10.5, 'mono500', T['muted'], ls=.8))
         assert D.measure(tech, 10.5, 'mono500', .8) < CW - 72 and D.measure(desc, 12.5, 'sans400') < CW - 72, name
-        if i < 2: b.append(f'<line x1="{x+54}" y1="{y+RH-6:.1f}" x2="{x+CW-18}" y2="{y+RH-6:.1f}" stroke="{T["line"]}" stroke-width="1.2"/>')
+        if i < len(CLIENTS) - 2: b.append(f'<line x1="{x+54}" y1="{y+RH-6:.1f}" x2="{x+CW-18}" y2="{y+RH-6:.1f}" stroke="{T["line"]}" stroke-width="1.2"/>')
     b.append(f'<line x1="{CW}" y1="18" x2="{CW}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
     b.append(frame(W, H, T, 1, 2))
     alt = ('Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. '
            'SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. '
-           'rdrightnow.com: corporate site with an Azure Functions contact form, private repo. Fara Ideal LED: landing with a Telegram lead form and a PDF proposal, private repo.')
+           '')
     write('clients', T, D.svg(W, H, '\n'.join(b), alt))
 
 if __name__ == '__main__':
@@ -173,5 +171,5 @@ if __name__ == '__main__':
         client_grid(T)
         lab_panel(T)
         chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 4: automation')
-        chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  SHADE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 6: client work')
+        chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  SHADE CREATIVE PEOPLE CLUB', 'Chapter 6: client work')
         chapter(T, '05', '第五話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 5: in the lab')

@@ -19,6 +19,15 @@ CACHE.mkdir(parents=True, exist_ok=True)
 
 SANS_VF = '/usr/share/fonts/google-noto-sans-cjk-vf-fonts/NotoSansCJK-VF.ttc'
 SERIF_VF = '/usr/share/fonts/google-noto-serif-cjk-vf-fonts/NotoSerifCJK-VF.ttc'
+MONT = {400: '/usr/share/fonts/julietaula-montserrat-fonts/Montserrat-Regular.otf',
+        500: '/usr/share/fonts/julietaula-montserrat-fonts/Montserrat-Medium.otf',
+        700: '/usr/share/fonts/julietaula-montserrat-fonts/Montserrat-Bold.otf',
+        900: '/usr/share/fonts/julietaula-montserrat-fonts/Montserrat-Black.otf'}
+MONT_SCALE = 0.93   # Montserrat runs wide; draw it a touch smaller than the nominal size so layouts built for Source Sans still fit
+
+def has_cjk(s):
+    return any(ord(c) > 0x2E80 for c in s)
+
 MONO = {400: '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Regular.otf',
         500: '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Medium.otf',
         600: '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Semibold.otf',
@@ -52,6 +61,7 @@ class Font:
         self.key = key
         self.tt = TTFont(str(path))
         self.upm = self.tt['head'].unitsPerEm
+        if key.startswith('lat'): self.upm = self.upm / MONT_SCALE
         self.cmap = self.tt.getBestCmap()
         self.order = self.tt.getGlyphOrder()
         self.gs = self.tt.getGlyphSet()
@@ -88,11 +98,15 @@ class Font:
 
 
 _FONTS = {}
-def font(key):
-    """sans400 sans500 sans700 sans900 mono400..mono700 serif900"""
+def font(key, text=''):
+    """sans400 sans500 sans700 sans900 mono400..mono700 serif900; Latin-only sans text is set in Montserrat (key lat###)"""
+    if key.startswith('sans') and text and not has_cjk(text):
+        key = 'lat' + key[-3:]
     if key not in _FONTS:
         fam, w = key[:-3], int(key[-3:])
-        if fam == 'sans':
+        if fam == 'lat':
+            p = MONT[w]
+        elif fam == 'sans':
             p = _instance(SANS_VF, LATIN + CJK, w, 'sans')
         elif fam == 'serif':
             p = _instance(SERIF_VF, LATIN + CJK, w, 'serif')
@@ -122,12 +136,12 @@ class Doc:
         return self.ids[k]
 
     def measure(self, s, size, fkey='sans400', ls=0):
-        fnt = font(fkey); k = size / fnt.upm
+        fnt = font(fkey, s); k = size / fnt.upm
         adv = sum(a for _, a, _, _ in fnt.shape(s))
         return adv * k + ls * max(0, len(s) - 1)
 
     def text(self, s, x, y, size, fkey='sans400', fill='#000', ls=0, anchor='start', opacity=None, extra='', skew=0):
-        fnt = font(fkey); k = size / fnt.upm
+        fnt = font(fkey, s); k = size / fnt.upm
         glyphs = fnt.shape(s)
         w = sum(a for _, a, _, _ in glyphs) * k + ls * max(0, len(glyphs) - 1)
         if anchor == 'middle': x -= w / 2

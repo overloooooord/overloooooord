@@ -200,14 +200,14 @@ def portrait(T, cx, cy):
 
 # ------------------------------------------------------------------ character sheet
 SKILLS = [  # name, tier (3 main, 2 daily, 1 working), where it is used in the projects on this page
-    ('Python · Django / DRF', 3, 'FLAVOR TREE · SMM RADAR · INVISION U · PETCARE'),
+    ('Python · Django / DRF', 3, 'FLAVOR TREE · SMM RADAR · INVISION U · IGTG'),
     ('PostgreSQL', 3, 'FLAVOR TREE · INVISION U'),
-    ('Telegram bots · aiogram', 2, 'SMM RADAR · INVISION U'),
-    ('Angular · TypeScript', 2, 'FLAVOR TREE (ANGULAR 18) · PETCARE'),
+    ('Telegram bots · aiogram', 2, 'SMM RADAR · IGTG · INVISION U'),
+    ('Angular · TypeScript', 2, 'FLAVOR TREE (ANGULAR 18) · STEPPEAI LANDING'),
     ('Automation · Playwright', 2, 'SMM RADAR · IGTG BOT · LEAD TOOLS · QA DASHBOARDS'),
     ('Claude API', 1, 'FLAVOR TREE SOMMELIER · SMM RADAR SUMMARIES'),
     ('Docker', 1, 'SMM RADAR (DOCKER + CADDY)'),
-    ('Java', 1, 'UNIVERSITY ROLE MANAGEMENT (OOP)'),
+    ('Java', 1, 'KBTU COURSEWORK'),
 ]
 TIER = {3: 'MAIN', 2: 'DAILY', 1: 'WORKING'}
 INVENTORY = 'FastAPI · React · Next.js · Redis · SQLite · Linux · GitHub Actions · Vercel · Azure · Cloudflare'
@@ -408,16 +408,10 @@ def write_neutral(name, content):
 QUESTS = [
     ('invision', '02', 'InVision U', 'DECENTRATHON 5.0', '選',
      'AI candidate scoring for the inDrive youth grant (16 to 22 y.o.): Telegram intake, essay NLP on ONNX, leadership scenarios, XGBoost + SHAP explanations, fairness audit, human in the loop.',
-     'DJANGO / DRF · POSTGRESQL · AIOGRAM · XGBOOST', 'InVision U, Decentrathon 5.0 AI inDrive track. AI candidate scoring for the inDrive youth grant: Telegram intake, essay NLP on ONNX, leadership scenarios, XGBoost with SHAP explanations, fairness audit, human in the loop.'),
-    ('steppe', '03', 'SteppeAI', 'STARTUP LANDING', '牧',
-     'AI + IoT virtual fencing for livestock. Trilingual RU / EN / KZ landing, pitch deck and commercial proposals.',
-     'NEXT.JS · TAILWIND · TYPESCRIPT', 'SteppeAI. AI and IoT virtual fencing for livestock: trilingual landing, pitch deck and commercial proposals. Next.js, Tailwind, TypeScript.'),
-    ('petcare', '04', 'Petcare Web', 'COURSE FINAL', '犬',
-     'Pet shop and adoption listings: catalog, cart, orders, JWT auth. Angular SPA over a Django REST API. KBTU Web Development final, built with Adelllya.',
-     'ANGULAR · DJANGO REST · JWT', 'Petcare Web. Pet shop and adoption listings with catalog, cart, orders and JWT auth. Angular over Django REST. KBTU Web Development final, built with Adelllya.'),
-    ('oop', '05', 'University Role Management', 'KBTU OOP', '学',
-     'Students, teachers, managers, admins, researchers. Course registration, grading, transcripts, requests. Pure Java, no frameworks.',
-     'JAVA · OOP · NO FRAMEWORKS', 'University Role Management System. Students, teachers, managers, admins, researchers; course registration, grading, transcripts, requests. Pure Java.'),
+     'DJANGO / DRF · POSTGRESQL · AIOGRAM · XGBOOST', 'InVision U, Decentrathon 5.0 AI inDrive track. AI candidate scoring for the inDrive youth grant: Telegram intake, essay NLP on ONNX, leadership scenarios, XGBoost with SHAP explanations, fairness audit, human in the loop. Django REST, PostgreSQL, aiogram.'),
+    ('igtg', '03', 'igtg · Instagram publisher', 'OWN TOOL · 251 TESTS', '発',
+     'Telegram bot on aiogram 3 that publishes reels, photos, carousels and stories to my own Instagram accounts. Scheduling queue in SQLite, three swappable backends: private API, Graph API, fake for tests.',
+     'AIOGRAM 3 · INSTAGRAPI · GRAPH API · SQLITE', 'igtg, own tool, 251 tests. Telegram bot on aiogram 3 that publishes reels, photos, carousels and stories to my own Instagram accounts. Scheduling queue in SQLite, three swappable backends: private API, Graph API, fake for tests.'),
 ]
 QW, QH, QGAP = 440, 214, 12  # QGAP: transparent strip under each card = row gutter
 
@@ -613,8 +607,8 @@ def footer(T):
     b = [f'<defs><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>'
          f'<feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs>',
          f'<rect width="{W}" height="{H}" fill="{T["bg"]}"/>',
-         dots(halftone_ring(512, 62, 26, 44, 440, 590, 0, H, 5, 1.6), AKA, .6 if dark else .5),
-         f'<circle cx="512" cy="62" r="26" fill="{AKA}"/>',
+         dots(halftone_ring(462, 62, 26, 44, 390, 540, 0, H, 5, 1.6), AKA, .6 if dark else .5),
+         f'<circle cx="462" cy="62" r="26" fill="{AKA}"/>',
          D.text('つづく', 40, 76, 46, 'sans900', T['text'], ls=2),
          D.text('TO BE CONTINUED  ·  NEXT COMMIT TOMORROW', 42, 101, 11, 'mono700', T['akatext'], ls=3),
          D.text('KLIM KASSYMKHAN', 548, 52, 12, 'mono700', T['text'], ls=4),
@@ -673,13 +667,13 @@ if __name__ == '__main__':
         if want('chapters'):
             chapter(T, '01', '第一話', 'CHARACTER SHEET', 'WHO IS PLAYING', 'Chapter 1: character sheet')
             chapter(T, '02', '第二話', 'FLAVOR TREE', 'FLAGSHIP  ·  ONEIDEA CHAMPIONSHIP 2026 × EFES KAZAKHSTAN', 'Chapter 2: Flavor Tree')
-            chapter(T, '03', '第三話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  STEPPEAI  ·  PETCARE  ·  UNIVERSITY RMS', 'Chapter 3: side quests')
+            chapter(T, '03', '第三話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 3: side quests')
             chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 6: client work')
             chapter(T, '07', '第七話', 'CONTRIBUTION LOG', SNAP, 'Chapter 7: contribution log')
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):
             quest_smm(T)
-            for (key, num, title, stamp, kanji, body, tech, alt), side, lean in zip(QUESTS, ('left', 'right', 'left', 'right'), (1, 1, -1, -1)):
+            for (key, num, title, stamp, kanji, body, tech, alt), side, lean in zip(QUESTS, ('left', 'right'), (1, 1)):
                 quest_card(T, key, num, title, stamp, kanji, body, tech, alt, side, lean)
         if want('client'): client_panel(T)
         if want('log'): training_log(T)
