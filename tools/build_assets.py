@@ -18,12 +18,13 @@ SHOTS = HERE.parent / 'assets' / 'shots'
 DATA = HERE / 'data' / 'contributions-2026-09-26.json'
 SNAP = 'SNAPSHOT · 2026.09'
 
-INK = '#0b0b0d'; INK2 = '#120d10'; BLOOD = '#3a0a10'; WINE = '#7a0a1a'
+# dark neutrals are GitHub's own (canvas #0d1117, overlay #161b22, border #30363d) so the panels sit in the page, not on it
+INK = '#0d1117'; INK2 = '#161b22'; BLOOD = '#30363d'; WINE = '#7a0a1a'
 AKA = '#c8102e'; SHU = '#ef454a'; NEON = '#ff2a2a'; PAPER = '#f3ede4'
 
-DARK = dict(name='dark', bg=INK, panel=INK2, text=PAPER, muted='#b5b0aa', dim='#8a8a8a', line=BLOOD,
-            frame=PAPER, frame_op=.75, aka=AKA, akatext=SHU, hot=NEON, wine=WINE, wine_op=.42,
-            tone=AKA, cell=['#21161a', '#4a0d17', '#7a0a1a', '#c8102e', '#ff2a2a'])
+DARK = dict(name='dark', bg=INK, panel=INK2, text=PAPER, muted='#9198a1', dim='#6e7681', line=BLOOD,
+            frame=PAPER, frame_op=.55, aka=AKA, akatext=SHU, hot=NEON, wine=WINE, wine_op=.35,
+            tone=AKA, cell=['#151b23', '#4a0d17', '#7a0a1a', '#c8102e', '#ff2a2a'])
 LIGHT = dict(name='light', bg=PAPER, panel=PAPER, text=INK, muted='#5c5459', dim='#857b75', line='#d9cbbd',
              frame=INK, frame_op=1, aka=AKA, akatext='#a50d25', hot=AKA, wine=AKA, wine_op=.13,
              tone=INK, cell=['#e4d9cc', '#f2b3bc', '#e2717e', '#c8102e', '#6e0a18'])
@@ -399,11 +400,27 @@ def flavor_stats(T):
     write('flavor-stats', T, D.svg(W, H, '\n'.join(b), 'Flavor Tree: 412 drinks, 50+ dishes, 4 pairing types, 150+ backend tests'))
 
 # ------------------------------------------------------------------ Flavor Tree manga pages (one file for both themes)
-def jpeg_data(path, width=None, crop=None, q=86):
+RED_STOPS = [(0, (34, 4, 10)), (.32, (122, 10, 26)), (.58, (200, 16, 46)), (.82, (239, 69, 74)), (1, (250, 196, 196))]
+
+def two_ink(im):
+    """reprint a screenshot in two inks like the Kuniyoshi panel: grey ramp from INK to PAPER, anything saturated goes red"""
+    import numpy as np
+    hexrgb = lambda h: np.array([int(h[i:i + 2], 16) for i in (1, 3, 5)], float)
+    ink, paper = hexrgb(INK), hexrgb(PAPER)
+    a = np.asarray(im.convert('RGB')).astype(float)
+    L = (a @ np.array([.299, .587, .114])) / 255
+    C = (a.max(-1) - a.min(-1)) / 255
+    base = ink + (paper - ink) * (np.clip((L - .06) / .9, 0, 1) ** 1.08)[..., None]
+    t = np.clip((C - .10) / .24, 0, 1); w = (t * t * (3 - 2 * t))[..., None]
+    red = np.stack([np.interp(L, [s for s, _ in RED_STOPS], [c[k] for _, c in RED_STOPS]) for k in range(3)], -1)
+    return Image.fromarray((base * (1 - w) + red * w).clip(0, 255).astype(np.uint8))
+
+def jpeg_data(path, width=None, crop=None, q=86, tone=False):
     im = Image.open(path).convert('RGB')
     if crop: im = im.crop(crop)
     if width and im.width != width:
         im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+    if tone: im = two_ink(im)
     buf = io.BytesIO(); im.save(buf, 'JPEG', quality=q, optimize=True, progressive=True)
     return 'data:image/jpeg;base64,' + base64.b64encode(buf.getvalue()).decode(), im.size
 
@@ -429,7 +446,7 @@ def kanji_tab(D, x, y, kanji, size=20, fill=AKA, color=PAPER):
 def flavor_pages():
     # page A: the championship build, bottom edge slants up to the right
     W, H = 900, 588; D = Doc()
-    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-home.jpg', 1200, q=84)
+    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-home.jpg', 1200, q=84, tone=True)
     x0, y0, x1 = 10, 34, 890; sh = (x1 - x0) / iw * ih
     yb_l, yb_r = y0 + sh - 4, y0 + sh - 26
     d = f'M{x0} {y0} H{x1} V{yb_r:.1f} L{x0} {yb_l:.1f} Z'
@@ -445,7 +462,7 @@ def flavor_pages():
     # page B: public desktop build (slanted right edge) + the phone in a red focus-line panel
     W, H = 900, 424; D = Doc()
     top_l, top_r = 26, 4                       # parallel to page A's bottom edge
-    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-beer.jpg', 1000, q=86)
+    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-beer.jpg', 1000, q=86, tone=True)
     xl0, xl1t, xl1b, yb = 10, 604, 586, 414
     ytop = lambda x: top_l + (top_r - top_l) * x / W
     dl = f'M{xl0} {ytop(xl0):.1f} L{xl1t} {ytop(xl1t):.1f} L{xl1b} {yb} L{xl0} {yb} Z'
@@ -454,7 +471,7 @@ def flavor_pages():
     xr0t, xr0b, xr1 = 622, 604, 890
     dr = f'M{xr0t} {ytop(xr0t):.1f} L{xr1} {ytop(xr1):.1f} L{xr1} {yb} L{xr0b} {yb} Z'
     b.append(f'<clipPath id="r"><path d="{dr}"/></clipPath>')
-    msrc, (mw, mh) = jpeg_data(SHOTS / 'flavor-tree-home-mobile.jpg', 390, q=88)
+    msrc, (mw, mh) = jpeg_data(SHOTS / 'flavor-tree-home-mobile.jpg', 390, q=88, tone=True)
     b.append('<clipPath id="scr"><rect x="-73" y="-158" width="146" height="316" rx="17"/></clipPath></defs>')
     b.append(f'<image href="{src}" x="{xl0 - 8}" y="{ytop(xl0):.1f}" width="{pw:.1f}" height="{ph:.1f}" clip-path="url(#l)" preserveAspectRatio="xMinYMin slice"/>')
     # right panel: red, halftone, focus lines around the phone
@@ -750,7 +767,6 @@ if __name__ == '__main__':
             chapter(T, '01', '第一話', 'CHARACTER SHEET', 'WHO IS PLAYING', 'Chapter 1: character sheet')
             chapter(T, '02', '第二話', 'FLAVOR TREE', 'FLAGSHIP  ·  ONEIDEA CHAMPIONSHIP 2026 × EFES KAZAKHSTAN', 'Chapter 2: Flavor Tree')
             chapter(T, '03', '第三話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 3: side quests')
-            chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 6: client work')
             chapter(T, '07', '第七話', 'CONTRIBUTION LOG', SNAP, 'Chapter 7: contribution log')
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):

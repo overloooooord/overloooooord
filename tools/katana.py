@@ -9,7 +9,7 @@ Callers wrap the returned SVG fragment in their own transform. Ids are prefixed 
 """
 import math
 
-INK = '#0b0b0d'; PAPER = '#f3ede4'; AKA = '#c8102e'; WINE = '#7a0a1a'
+INK = '#0d1117'; PAPER = '#f3ede4'; AKA = '#c8102e'; WINE = '#7a0a1a'
 GOLD = '#c9a961'; GOLD_D = '#8a6d3b'; GOLD_L = '#f1e2b4'
 STEEL = dict(mune='#5f5a57', shinogiji='#8c8680', ji='#b7b0a7', ji_lo='#cfc8be', hamon='#f6f1e8', edge='#ffffff')
 

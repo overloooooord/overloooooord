@@ -142,7 +142,7 @@ def ops_panel(T):
 
 CLIENTS = [
     ('rdrightnow.com', 'LIVE', 'Multi-page site for an engineering studio: canvas hero, scroll reveals, stack ticker, contact form on Azure Functions.', 'HTML · CSS · JS · AZURE FUNCTIONS'),
-    ('Finance Bridge', 'LIVE', 'Landing for an accounting firm in Kazakhstan with server-side TikTok Events API tracking.', 'REACT 19 · VITE 7 · TAILWIND 4'),
+    ('InVision U', 'LIVE', 'Admissions portal: application form, MBTI and language tests in RU, KZ and EN, and a review panel for the selection committee.', 'HTML · CSS · VANILLA JS · I18N'),
     ('SHADE', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts, a links hub with a QR code.', 'REACT · VITE · TAILWIND 4 · MOTION'),
 ]
 
@@ -176,28 +176,28 @@ def fe_pages():
     # left: rdrightnow.com, slanted right edge
     xl0, xl1t, xl1b, yb = 10, 560, 536, 410
     dl = f'M{xl0} {ytop(xl0):.1f} L{xl1t} {ytop(xl1t):.1f} L{xl1b} {yb} L{xl0} {yb} Z'
-    src, (iw, ih) = jpeg_data(SHOTS / 'rdrightnow-home.jpg', 1100, q=84)
+    src, (iw, ih) = jpeg_data(SHOTS / 'rdrightnow-home.jpg', 1100, q=84, tone=True)
     ph = yb - ytop(xl0); pw = ph * iw / ih
     b = [f'<defs><clipPath id="l"><path d="{dl}"/></clipPath>']
     # right column: two panels split by a slanted gutter
     xr0t, xr0b, xr1 = 576, 552, 890
-    ym_l, ym_r = 212, 196                     # gutter between Finance Bridge and SHADE
+    ym_l, ym_r = 212, 196                     # gutter between InVision U and SHADE
     dt = f'M{xr0t} {ytop(xr0t):.1f} L{xr1} {ytop(xr1):.1f} L{xr1} {ym_r} L{xr0t - (xr0t - xr0b) * (ym_l - ytop(xr0t)) / (yb - ytop(xr0t)):.1f} {ym_l} Z'
     xg = xr0t - (xr0t - xr0b) * (ym_l + 14 - ytop(xr0t)) / (yb - ytop(xr0t))
     db = f'M{xg:.1f} {ym_l + 14} L{xr1} {ym_r + 14} L{xr1} {yb} L{xr0b} {yb} Z'
     b.append(f'<clipPath id="t"><path d="{dt}"/></clipPath><clipPath id="bb"><path d="{db}"/></clipPath></defs>')
     b.append(f'<image href="{src}" x="{xl0}" y="{ytop(xl0):.1f}" width="{pw:.1f}" height="{ph:.1f}" clip-path="url(#l)" preserveAspectRatio="xMinYMin slice"/>')
-    for fn, clip, y0, h in (('finance-bridge-home.jpg', 't', ytop(xr0b), ym_l - ytop(xr0b)), ('shade-home.jpg', 'bb', ym_r + 14, yb - ym_r - 14)):
-        s2, (w2, h2) = jpeg_data(SHOTS / fn, 760, crop=(30, 0, 1440, 900) if fn.startswith('finance') else None, q=84)
+    for fn, clip, y0, h in (('invision-home.jpg', 't', ytop(xr0b), ym_l - ytop(xr0b)), ('shade-home.jpg', 'bb', ym_r + 14, yb - ym_r - 14)):
+        s2, (w2, h2) = jpeg_data(SHOTS / fn, 760, crop=(170, 40, 1270, 730) if fn.startswith('invision') else None, q=84, tone=True)
         ww = xr1 - xr0b + 30; hh = ww * h2 / w2
         b.append(f'<image href="{s2}" x="{xr0b - 20}" y="{y0 - 4:.1f}" width="{ww:.1f}" height="{hh:.1f}" clip-path="url(#{clip})" preserveAspectRatio="xMinYMin slice"/>')
     for d in (dl, dt, db):
         b.append(ink_frame(d))
-    for (x, y, kanji, cap, fill) in ((26, ytop(26) - 18, '研究', 'RDRIGHTNOW.COM', AKA), (xr0t + 14, ytop(xr0t + 14) - 18, '会計', 'FINANCE BRIDGE', INK), (xg + 16, ym_l + 2, '美術', 'SHADE', AKA)):
+    for (x, y, kanji, cap, fill) in ((26, ytop(26) - 18, '研究', 'RDRIGHTNOW.COM', AKA), (xr0t + 14, ytop(xr0t + 14) - 18, '入学', 'INVISION U', INK), (xg + 16, ym_l + 2, '美術', 'SHADE', AKA)):
         t, tw = kanji_tab(D, x, y, kanji, fill=fill)
         b.append(t)
         b.append(caption_box(D, x + tw + 22, y + 4, [cap]))
-    write_neutral('fe-pages', D.svg(W, H, '\n'.join(b), 'Three front ends: rdrightnow.com with its R and D hero, Finance Bridge accounting landing, SHADE creative club site'))
+    write_neutral('fe-pages', D.svg(W, H, '\n'.join(b), 'Three front ends: rdrightnow.com with its R and D hero, the InVision U admissions portal, SHADE creative club site'))
 
 def print_panel():
     """next episode: a ronin drawing his sword, Utagawa Kuniyoshi, 1847 (public domain), printed in ink and red"""
@@ -223,7 +223,7 @@ if __name__ == '__main__':
         next_panel(T)
         lab_panel(T)
         chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 4: automation')
-        chapter(T, '06', '第六話', 'FRONTEND', 'RDRIGHTNOW.COM  ·  FINANCE BRIDGE  ·  SHADE  ·  REACT  ·  VITE  ·  AZURE', 'Chapter 6: frontend')
+        chapter(T, '06', '第六話', 'FRONTEND', 'RDRIGHTNOW.COM  ·  INVISION U  ·  SHADE  ·  REACT  ·  VITE  ·  AZURE', 'Chapter 6: frontend')
         chapter(T, '05', '第五話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 5: in the lab')
     fe_pages()
     print_panel()

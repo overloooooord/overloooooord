@@ -65,12 +65,12 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: frontend"></picture>
 
 <p align="center">
-<a href="https://www.rdrightnow.com"><img src="assets/fe-pages.svg" width="100%" alt="Three front ends: rdrightnow.com with its R and D hero, Finance Bridge accounting landing, SHADE creative club site"></a>
+<a href="https://www.rdrightnow.com"><img src="assets/fe-pages.svg" width="100%" alt="Three front ends: rdrightnow.com with its R and D hero, the InVision U admissions portal, SHADE creative club site"></a>
 </p>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/clients.svg"><source media="(prefers-color-scheme: light)" srcset="assets/clients-light.svg"><img src="assets/clients.svg" width="100%" alt="Frontend. rdrightnow.com: Multi-page site for an engineering studio: canvas hero, scroll reveals, stack ticker, contact form on Azure Functions. Html · Css · Js · Azure Functions.  Finance Bridge: Landing for an accounting firm in Kazakhstan with server-side TikTok Events API tracking. React 19 · Vite 7 · Tailwind 4.  SHADE: Site for the KBTU creative club: drawing, art therapy, crafts, a links hub with a QR code. React · Vite · Tailwind 4 · Motion. "></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/clients.svg"><source media="(prefers-color-scheme: light)" srcset="assets/clients-light.svg"><img src="assets/clients.svg" width="100%" alt="Frontend. rdrightnow.com: Multi-page site for an engineering studio: canvas hero, scroll reveals, stack ticker, contact form on Azure Functions. Html · Css · Js · Azure Functions.  InVision U: Admissions portal: application form, MBTI and language tests in RU, KZ and EN, and a review panel for the selection committee. Html · Css · Vanilla Js · I18N.  SHADE: Site for the KBTU creative club: drawing, art therapy, crafts, a links hub with a QR code. React · Vite · Tailwind 4 · Motion. "></picture>
 
-<sub>rdrightnow.com: <a href="https://www.rdrightnow.com">live</a>. Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. Client repos stay private unless the client made them public.</sub>
+<sub>rdrightnow.com: <a href="https://www.rdrightnow.com">live</a>. InVision U: <a href="https://indrive-ai.vercel.app">live</a> · <a href="https://github.com/overloooooord/indrive">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. Client repos stay private unless the client made them public.</sub>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-daisho.svg"><source media="(prefers-color-scheme: light)" srcset="assets/divider-daisho-light.svg"><img src="assets/divider-daisho.svg" width="100%" alt="Daisho: a katana over a wakizashi resting on a black lacquer sword stand with gold maki-e"></picture>
 

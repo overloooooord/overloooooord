@@ -17,7 +17,7 @@ PAUSE = 2.6                         # rest at the end, then the grid grows back
 
 THEMES = {
     'light': dict(cells=['#ebe4da', '#f2b3bc', '#e2717e', '#c8102e', '#6e0a18'], cut='#ebe4da', slash='#c8102e', flash='#0b0b0d'),
-    'dark': dict(cells=['#1f1a1d', '#4a0d17', '#7a0a1a', '#c8102e', '#ff2a2a'], cut='#1f1a1d', slash='#ff2a2a', flash='#ffffff'),
+    'dark': dict(cells=['#151b23', '#4a0d17', '#7a0a1a', '#c8102e', '#ff2a2a'], cut='#151b23', slash='#ff2a2a', flash='#ffffff'),
 }
 
 
