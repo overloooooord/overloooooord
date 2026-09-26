@@ -204,6 +204,7 @@ SKILLS = [  # name, tier (3 main, 2 daily, 1 working), where it is used in the p
     ('PostgreSQL', 3, 'FLAVOR TREE · INVISION U'),
     ('Telegram bots · aiogram', 2, 'SMM RADAR · INVISION U'),
     ('Angular · TypeScript', 2, 'FLAVOR TREE (ANGULAR 18) · PETCARE'),
+    ('Automation · Playwright', 2, 'SMM RADAR · IGTG BOT · LEAD TOOLS · QA DASHBOARDS'),
     ('Claude API', 1, 'FLAVOR TREE SOMMELIER · SMM RADAR SUMMARIES'),
     ('Docker', 1, 'SMM RADAR (DOCKER + CADDY)'),
     ('Java', 1, 'UNIVERSITY ROLE MANAGEMENT (OOP)'),
@@ -289,7 +290,7 @@ def sheet(T):
     b.append(f'<rect x="5.5" y="49.5" width="{W-11}" height="{H-55}" fill="none" stroke="{T["text"]}" stroke-opacity="{.12 if dark else .18}"/>')
     alt = ('Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, '
            'Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and '
-           'TypeScript; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, '
+           'TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, '
            '18 public repositories, 850 plus tests. Snapshot September 2026.')
     write('sheet', T, D.svg(W, H, '\n'.join(b), alt, style))
 
@@ -669,8 +670,8 @@ if __name__ == '__main__':
             chapter(T, '01', '第一話', 'CHARACTER SHEET', 'WHO IS PLAYING', 'Chapter 1: character sheet')
             chapter(T, '02', '第二話', 'FLAVOR TREE', 'FLAGSHIP  ·  ONEIDEA CHAMPIONSHIP 2026 × EFES KAZAKHSTAN', 'Chapter 2: Flavor Tree')
             chapter(T, '03', '第三話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  STEPPEAI  ·  PETCARE  ·  UNIVERSITY RMS', 'Chapter 3: side quests')
-            chapter(T, '04', '第四話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 4: client work')
-            chapter(T, '05', '第五話', 'CONTRIBUTION LOG', SNAP, 'Chapter 5: contribution log')
+            chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 6: client work')
+            chapter(T, '07', '第七話', 'CONTRIBUTION LOG', SNAP, 'Chapter 7: contribution log')
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):
             quest_smm(T)

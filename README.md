@@ -7,11 +7,11 @@
 
 <sub>PROLOGUE · 第零話</sub>
 
-Final years of Software Engineering at KBTU, Almaty. Three years of building Python backends that ship: Django and FastAPI services, PostgreSQL schemas, Telegram bots, computer vision on OpenCV, and the Angular or React fronts that sit on top of them. In 2026 that meant a pairing engine for Efes Kazakhstan with 412 drinks in it, an AI scoring pipeline for inDrive at Decentrathon 5.0, a Telegram analytics SaaS in private beta with 703 tests behind it, and three more builds in the lab. The old bio said <code>pythoooooooooon</code>. Still accurate.
+Final years of Software Engineering at KBTU, Almaty. Three years of building Python backends that ship: Django and FastAPI services, PostgreSQL schemas, Telegram bots, browser and API automation, computer vision on OpenCV, and the Angular or React fronts that sit on top of them. In 2026 that meant a pairing engine for Efes Kazakhstan with 412 drinks in it, an AI scoring pipeline for inDrive at Decentrathon 5.0, a Telegram analytics SaaS in private beta with 703 tests behind it, and three more builds in the lab. The old bio said <code>pythoooooooooon</code>. Still accurate.
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-01.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-01-light.svg"><img src="assets/chapter-01.svg" width="100%" alt="Chapter 1: character sheet"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/sheet.svg"><source media="(prefers-color-scheme: light)" srcset="assets/sheet-light.svg"><img src="assets/sheet.svg" width="100%" alt="Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and TypeScript; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, 18 public repositories, 850 plus tests. Snapshot September 2026."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/sheet.svg"><source media="(prefers-color-scheme: light)" srcset="assets/sheet-light.svg"><img src="assets/sheet.svg" width="100%" alt="Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, 18 public repositories, 850 plus tests. Snapshot September 2026."></picture>
 
 <br>
 
@@ -47,13 +47,21 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: in the lab"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-04.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-04-light.svg"><img src="assets/chapter-04.svg" width="100%" alt="Chapter 4: automation"></picture>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/automation.svg"><source media="(prefers-color-scheme: light)" srcset="assets/automation-light.svg"><img src="assets/automation.svg" width="100%" alt="Automation. Browser and HTTP: Playwright and Camoufox where a page needs a real browser, curl_cffi and aiohttp where it does not, async pipelines with retries, proxy pools and per-account profiles, a React and Flask dashboard. Mail and auth flows: IMAP polling for verification links and OTP codes, OAuth 2.0 chains, session cookies and 2FA scripted end to end. Bots and schedulers: aiogram Telegram bots with a publishing queue (igtg, 251 tests), weekly report jobs, lead collection from OpenStreetMap, GitHub Actions and Azure Functions."></picture>
+
+<sub>Three years of this before the products: pipelines that log in, verify, collect and report on their own, with a dashboard to watch them and a Telegram bot to steer them. Repos with client accounts and credentials stay private.</sub>
+
+<br>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-05.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-05-light.svg"><img src="assets/chapter-05.svg" width="100%" alt="Chapter 5: in the lab"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/lab.svg"><source media="(prefers-color-scheme: light)" srcset="assets/lab-light.svg"><img src="assets/lab.svg" width="100%" alt="In the lab, September 2026, private repos: Footfall, a visitor counter for shops and cafes on existing Hikvision and Dahua cameras with OpenCV DNN and a live dashboard; FaceTabel, consent-only face check-in for staff with YuNet and SFace on OpenCV 5, 0 false matches in 300 LFW pairs; Spread Scanner, spot spread and funding arbitrage across seven crypto exchanges, sold as a Telegram channel."></picture>
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-04.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-04-light.svg"><img src="assets/chapter-04.svg" width="100%" alt="Chapter 4: client work"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: client work"></picture>
 
 <p>
 <img src="https://media.tenor.com/gHrQbqYqN_sAAAAC/flor.gif" width="42%" alt="Red spider lilies on black"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/client-work.svg"><source media="(prefers-color-scheme: light)" srcset="assets/client-work-light.svg"><img src="assets/client-work.svg" width="57.8%" alt="Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, server-side TikTok Events API tracking, live. rdrightnow.com: corporate site with an Azure Functions contact form and Azure Communication Services email, private repo. Fara Ideal LED: landing with a Telegram lead form and a PDF proposal, HTML and JS, Node, Vercel, private repo."></picture>
@@ -63,7 +71,7 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-05.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-05-light.svg"><img src="assets/chapter-05.svg" width="100%" alt="Chapter 5: contribution log"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-07.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-07-light.svg"><img src="assets/chapter-07.svg" width="100%" alt="Chapter 7: contribution log"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/contrib-log.svg"><source media="(prefers-color-scheme: light)" srcset="assets/contrib-log-light.svg"><img src="assets/contrib-log.svg" width="100%" alt="Contribution log, snapshot September 2026: heatmap of 2026 with 484 contributions, a spike in April during Decentrathon 5.0 and a 60 day streak from July 22 to September 19. 18 public repositories."></picture>
 
