@@ -71,50 +71,63 @@ def halftone_ring(cx, cy, r0, spread, x0, x1, y0, y1, step, rmax, avoid=None):
             if r >= .4: pts.append((xx, y, r))
     return pts
 
-# ------------------------------------------------------------------ katana (local coords: handle at x=0, tip at x=L, blade along +x)
-def katana(T, L=420, glint='', hamon=True):
-    """A drawn katana: kashira, ito-wrapped tsuka, tsuba, habaki, curved blade with shinogi line and hamon, kissaki tip."""
-    dark = T['name'] == 'dark'
-    paper = PAPER if dark else '#fbf7f0'; ink = INK; steel = paper
-    H0 = 100; mid = (H0 + L) / 2; tip = L
-    blade = (f'M{H0} 6.5 L{H0} -4 Q{mid} -10 {tip-46} -7.5 L{tip} -1 L{tip-40} 6 Q{mid} 9 {H0} 6.5 Z')
-    g = [f'<path d="{blade}" fill="{steel}" stroke="{ink}" stroke-width="1.2" stroke-linejoin="round"/>',
-         f'<path d="M{H0} 1 Q{mid} -1.5 {tip-46} -1" fill="none" stroke="{AKA}" stroke-width="1" opacity=".75"/>']
-    if hamon:
-        pts = ' '.join(f'{x:.0f} {5.2 + (1.6 if i % 2 else 0):.1f}' for i, x in enumerate(range(H0 + 8, tip - 48, 14)))
-        g.append(f'<polyline points="{pts}" fill="none" stroke="{AKA}" stroke-width=".8" opacity=".45"/>')
-    if glint:
-        g.append(f'<clipPath id="kb"><path d="{blade}"/></clipPath>')
-        g.append(f'<g clip-path="url(#kb)"><rect class="{glint}" x="{H0}" y="-12" width="34" height="24" fill="{paper if dark else "#ffffff"}" opacity=".85" transform="skewX(-30)"/></g>')
-    # habaki, tsuba, tsuka, kashira
-    g.append(f'<rect x="{H0-2}" y="-5.5" width="10" height="12" fill="{AKA}"/>')
-    g.append(f'<rect x="88" y="-14" width="9" height="28" rx="3" fill="{ink}" stroke="{AKA}" stroke-width="1.5"/>')
-    g.append(f'<rect x="4" y="-7" width="84" height="14" rx="3" fill="{ink}" stroke="{AKA}" stroke-width="1.2"/>')
-    d = ''.join(f'<path d="M{x} 0 l7 -6 l7 6 l-7 6 z"/>' for x in range(10, 82, 14))
-    g.append(f'<g fill="{paper}" opacity=".9">{d}</g>')
-    g.append(f'<rect x="0" y="-7.5" width="6" height="15" rx="2" fill="{AKA}"/>')
-    return ''.join(g)
+# ------------------------------------------------------------------ katana illustrations live in katana.py
+from katana import Katana, GOLD
+
+LANGS = 'Python · TypeScript · JavaScript · Java · SQL'
+STACK = 'Django · DRF · FastAPI · Angular · React · aiogram · Playwright'
+
+def taper_slash(x1, y1, x2, y2, cls, widths=((1.6, 0.0, 1.0), (3.4, 0.14, 0.86), (5.6, 0.3, 0.7))):
+    """a tapered slash drawn as stacked strokes of shrinking length; each layer draws in on its own delay"""
+    out = []
+    for w, a, b in widths:
+        ax, ay = x1 + (x2 - x1) * a, y1 + (y2 - y1) * a
+        bx, by = x1 + (x2 - x1) * b, y1 + (y2 - y1) * b
+        out.append(f'<path class="{cls}{int(a*100)}" d="M{ax:.1f} {ay:.1f} L{bx:.1f} {by:.1f}" pathLength="1" stroke-width="{w}" stroke-linecap="round"/>')
+    return ''.join(out)
 
 # ------------------------------------------------------------------ hero poster
 def hero(T):
-    W, H = 900, 320; SX, SY, SR = 668, 158, 118; rnd = random.Random(7); D = Doc(); dark = T['name'] == 'dark'
+    W, H = 900, 344; SX, SY, SR = 668, 158, 118; rnd = random.Random(7); D = Doc(); dark = T['name'] == 'dark'
+    th = math.radians(-12); u = (math.cos(th), math.sin(th)); n = (-u[1], u[0])          # blade direction and its normal
+    off = 55; Q = (SX + off * n[0], SY + off * n[1]); half = math.sqrt(SR * SR - off * off)
+    k = Katana(430, 'hk', ito='red', hamon='notare', hi=True, red_glow=.14, rim_light=PAPER if dark else None)
+    t0 = k.x_t + 4 + half + 6
+    P0 = (Q[0] - t0 * u[0], Q[1] - t0 * u[1])
+    kdefs, kbody = k.svg(glint_class='kgl')
+    gap = 7.2
+    sag = k.S * k.L / 4 * 0.9                                # the blade bows below its chord; centre the cut on the steel
+    Qc = (Q[0] + sag * n[0], Q[1] + sag * n[1])
+    cut_a = (Q[0] - 150 * u[0] + 6 * n[0], Q[1] - 150 * u[1] + 6 * n[1]); cut_b = (Q[0] + 170 * u[0] + 6 * n[0], Q[1] + 170 * u[1] + 6 * n[1])
+    T_SL = 2.6                                              # load sequence length, s
     style = ('@keyframes spark{0%{transform:translateX(0)}100%{transform:translateX(330px)}}.spark{animation:spark 2.8s ease-in-out infinite alternate}'
              '@keyframes fall{0%{transform:translate(0,0) rotate(0deg);opacity:0}8%{opacity:.8}92%{opacity:.8}100%{transform:translate(-150px,300px) rotate(320deg);opacity:0}}'
              + ''.join(f'.p{i}{{animation:fall {7+i*1.3:.1f}s linear {i*1.7:.1f}s infinite}}' for i in range(6))
              + f'@keyframes shimmer{{0%,100%{{opacity:{.18 if dark else .22}}}50%{{opacity:{.5 if dark else .55}}}}}'
              + ''.join(f'.l{i}{{animation:shimmer {3+(i%4)*.9:.1f}s ease-in-out {i*.37:.2f}s infinite}}' for i in range(8))
-             + '@keyframes kg{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(340px) skewX(-30deg)}}.kg{animation:kg 1.6s cubic-bezier(.2,.7,.2,1) .6s infinite;animation-delay:.6s}')
+             # reveal, the way rdrightnow.com brings its hero in: rise 14px and fade, 70 ms apart
+             + '@keyframes rv{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}'
+             + ''.join(f'.rv{i}{{animation:rv .7s cubic-bezier(.16,1,.3,1) {0.05 + i*0.07:.2f}s both}}' for i in range(7))
+             # the cut: a slash draws along the blade line, then the sun parts along it and the steel shows in the gap
+             + ''.join(f'@keyframes sl{a}{{0%,{int(28+a*0.12)}%{{stroke-dashoffset:1}}{int(36+a*0.12)}%,100%{{stroke-dashoffset:0}}}}.sl{a}{{stroke-dasharray:1;animation:sl{a} {T_SL}s linear both}}' for a in (0, 14, 30))
+             + '@keyframes slf{0%,48%{opacity:1}70%,100%{opacity:.32}}.slf{animation:slf 2.6s ease-out both}'
+             + f'@keyframes su{{0%,40%{{transform:translate(0,0)}}58%,100%{{transform:translate({-n[0]*gap:.2f}px,{-n[1]*gap:.2f}px)}}}}.su{{animation:su {T_SL}s cubic-bezier(.2,.8,.2,1) both}}'
+             + f'@keyframes sd{{0%,40%{{transform:translate(0,0)}}62%,100%{{transform:translate({n[0]*gap + u[0]*12:.2f}px,{n[1]*gap + u[1]*12:.2f}px)}}}}.sd{{animation:sd {T_SL}s cubic-bezier(.2,.8,.2,1) both}}'
+             + '@keyframes kgl{0%{transform:translateX(-60px)}35%,100%{transform:translateX(330px)}}.kgl{animation:kgl 4.6s cubic-bezier(.3,0,.2,1) 1.4s infinite}')
+    far = 1400
+    def halfplane(sign):
+        a = (Qc[0] - far * u[0], Qc[1] - far * u[1]); b = (Qc[0] + far * u[0], Qc[1] + far * u[1])
+        c = (b[0] + sign * far * n[0], b[1] + sign * far * n[1]); d = (a[0] + sign * far * n[0], a[1] + sign * far * n[1])
+        return ' '.join(f'{x:.1f},{y:.1f}' for x, y in (a, b, c, d))
     b = [f'<defs><linearGradient id="rule" x1="0" x2="1"><stop offset="0" stop-color="{T["aka"]}"/><stop offset="1" stop-color="{T["aka"]}" stop-opacity="0"/></linearGradient>'
-         f'<clipPath id="fr"><rect width="{W}" height="{H}"/></clipPath></defs>',
+         f'<clipPath id="fr"><rect width="{W}" height="{H}"/></clipPath><clipPath id="hu"><polygon points="{halfplane(-1)}"/></clipPath><clipPath id="hd"><polygon points="{halfplane(1)}"/></clipPath>'
+         f'<filter id="glow" x="-10%" y="-200%" width="120%" height="500%"><feGaussianBlur stdDeviation="2.4"/></filter>{kdefs}</defs>',
          f'<rect width="{W}" height="{H}" fill="{T["bg"]}"/>', '<g clip-path="url(#fr)">']
-    # halftone falloff around the sun (dot size drops with distance), kept off the katakana
     fade_left = lambda x, y: max(0, min(1, (x - 470) / 90))
-    b.append(dots(halftone_ring(SX, SY, SR, 175, 440, 900, 0, 324, 8, 2.8, fade_left), T['aka'], .55 if dark else .5))
-    # screen tone in the lower left, growing towards the bottom edge
-    tone = [(x, y, r) for x, y, r in ((x + (4 if (y // 7) % 2 else 0), y, 1.5 * ((y - 214) / 106) ** 1.3)
-            for y in range(214, 322, 7) for x in range(0, 430, 7)) if r > .35 and x < 430 - (y - 214) * .5]
-    b.append(dots(tone, WINE if dark else INK, .6 if dark else .16))
-    # focus lines (集中線) radiating from the sun, kept off the kicker
+    b.append(dots(halftone_ring(SX, SY, SR, 175, 440, 900, 0, H + 4, 8, 2.8, fade_left), T['aka'], .55 if dark else .5))
+    tone = [(x, y, r) for x, y, r in ((x + (4 if (y // 7) % 2 else 0), y, 1.5 * ((y - 238) / 106) ** 1.3)
+            for y in range(238, H + 2, 7) for x in range(0, 430, 7)) if r > .35 and x < 430 - (y - 238) * .5]
+    b.append(dots(tone, WINE if dark else INK, .5 if dark else .12))
     lines = []
     for i in range(64):
         ang = math.radians(rnd.uniform(96, 264))
@@ -123,58 +136,84 @@ def hero(T):
         x2, y2 = SX + r2 * math.cos(ang), SY + r2 * math.sin(ang)
         if any(40 <= x1 + (x2 - x1) * t <= 600 and 30 <= y1 + (y2 - y1) * t <= 62 for t in (0, .25, .5, .75, 1)):
             continue
+        if any(40 <= x1 + (x2 - x1) * t <= 640 and 282 <= y1 + (y2 - y1) * t <= H for t in (0, .25, .5, .75, 1)):
+            continue
         lines.append(f'<line class="l{i%8}" x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" stroke-width="{rnd.uniform(.7,2.2):.1f}"/>')
     b.append(f'<g stroke="{T["aka"]}" stroke-linecap="round">{"".join(lines)}</g>')
-    # the sun: one flat disc, poster style, with a katana drawn across it
-    b.append(f'<circle cx="{SX}" cy="{SY}" r="{SR}" fill="{T["aka"]}"/>')
-    b.append(f'<g transform="translate(518 318) rotate(-44)">{katana(T, 420, "kg")}</g>')
-    # katakana name: knockout, red offset print, face
+    # the sword sits behind the sun: handle and tip outside, the blade hidden until the cut opens
+    b.append(f'<g transform="translate({P0[0]:.1f} {P0[1]:.1f}) rotate({math.degrees(th) + k.level():.2f})">{kbody}</g>')
+    sun = f'<circle cx="{SX}" cy="{SY}" r="{SR}" fill="{T["aka"]}"/>'
+    b.append(f'<g class="su" transform="translate({-n[0]*gap:.2f} {-n[1]*gap:.2f})"><g clip-path="url(#hu)">{sun}</g></g>')
+    b.append(f'<g class="sd" transform="translate({n[0]*gap + u[0]*12:.2f} {n[1]*gap + u[1]*12:.2f})"><g clip-path="url(#hd)">{sun}</g></g>')
+    sl = taper_slash(*cut_a, *cut_b, 'sl')
+    b.append(f'<g class="slf" fill="none"><g stroke="{T["hot"]}" filter="url(#glow)" opacity=".9">{sl}</g><g stroke="{PAPER if dark else "#ffffff"}">{sl}</g></g>')
     kx, ky, ks = 54, 214, 150
-    b.append(D.text('クリム', kx, ky, ks, 'sans900', T['bg'], ls=-6, extra=f' stroke="{T["bg"]}" stroke-width="{14/ks*1000:.0f}" stroke-linejoin="round"'))
-    b.append(D.text('クリム', kx + 7, ky + 7, ks, 'sans900', T['aka'], ls=-6))
-    b.append(D.text('クリム', kx, ky, ks, 'sans900', T['text'], ls=-6))
-    b.append(D.text('AKAI · BACKEND DEVELOPER · KBTU · ALMATY, KZ', 56, 52, 11.5, 'mono700', T['akatext'], ls=4))
-    b.append(D.text('KLIM KASSYMKHAN', 56, 262, 27, 'sans900', T['text'], ls=3))
-    b.append(f'<rect x="56" y="280" width="420" height="2" fill="url(#rule)"/>')
-    b.append(f'<rect class="spark" x="56" y="280" width="70" height="2" fill="{T["text"]}" opacity=".9"/>')
-    b.append(D.text('DJANGO · FASTAPI · POSTGRESQL · ANGULAR', 56, 303, 11.5, 'mono500', T['muted'], ls=3))
-    # vertical kanji column, right edge
-    b.append(D.vtext('開発者', 862, 34, 26, 'sans700', T['text'], gap=6))
-    b.append(D.vtext('バックエンド', 836, 40, 13, 'sans700', T['akatext'], gap=3))
-    b.append(f'<line x1="862" y1="140" x2="862" y2="228" stroke="{T["text"]}" stroke-width="1" opacity=".4"/>')
-    b.append(f'<rect x="838" y="254" width="42" height="42" fill="{T["aka"]}"/>')
-    b.append(D.text('赤', 859, 287, 30, 'sans900', PAPER, anchor='middle'))
-    b.append(D.text('VOL.03', 829, 303, 10, 'mono500', T['dim'], ls=2, anchor='end'))
+    b.append('<g class="rv1">' + D.text('クリム', kx, ky, ks, 'sans900', T['bg'], ls=-6, extra=f' stroke="{T["bg"]}" stroke-width="{14/ks*1000:.0f}" stroke-linejoin="round"')
+             + D.text('クリム', kx + 7, ky + 7, ks, 'sans900', T['aka'], ls=-6) + D.text('クリム', kx, ky, ks, 'sans900', T['text'], ls=-6) + '</g>')
+    b.append('<g class="rv0">' + D.text('AKAI · BACKEND DEVELOPER · KBTU · ALMATY, KZ', 56, 52, 11.5, 'mono700', T['akatext'], ls=4) + '</g>')
+    b.append('<g class="rv2">' + D.text('KLIM KASSYMKHAN', 56, 262, 27, 'sans900', T['text'], ls=3) + '</g>')
+    b.append(f'<g class="rv3"><rect x="56" y="278" width="440" height="2" fill="url(#rule)"/><rect class="spark" x="56" y="278" width="70" height="2" fill="{T["text"]}" opacity=".9"/></g>')
+    lw = max(D.measure(l, 10.5, 'mono700', 3) for l in ('LANG', 'STACK'))
+    for i, (lab, txt, y) in enumerate((('LANG', LANGS, 304), ('STACK', STACK, 327))):
+        b.append(f'<g class="rv{4+i}">' + D.text(lab, 57, y, 10.5, 'mono700', T['akatext'], ls=3, skew=-12)
+                 + f'<rect x="{57 + lw + 8:.1f}" y="{y-4.5}" width="10" height="1.4" fill="{T["aka"]}"/>'
+                 + D.text(txt, 57 + lw + 26, y, 13, 'sans500', T['text'], opacity=.94) + '</g>')
+    assert 57 + lw + 26 + D.measure(STACK, 13, 'sans500') < 820, 'stack line too long'
+    b.append('<g class="rv6">' + D.vtext('開発者', 862, 34, 26, 'sans700', T['text'], gap=6) + D.vtext('バックエンド', 836, 40, 13, 'sans700', T['akatext'], gap=3)
+             + f'<rect x="838" y="254" width="42" height="42" fill="{T["aka"]}"/>'
+             + D.text('赤', 859, 287, 30, 'sans900', PAPER, anchor='middle') + D.text('VOL.03', 880, 322, 10, 'mono500', T['dim'], ls=2, anchor='end') + '</g>')
     petal = 'M0,-7 C4.5,-4.5 5.5,2.5 0,7 C-5.5,2.5 -4.5,-4.5 0,-7 Z'
     for i, (px, py, sc) in enumerate([(560, -10, 1), (700, -20, .8), (820, -6, 1.1), (640, -30, .7), (760, -12, .9), (880, -24, .75)]):
         b.append(f'<g class="p{i}"><path d="{petal}" transform="translate({px} {py}) scale({sc})" fill="{T["akatext"] if dark else AKA}"/></g>')
     b.append('</g>')
     b.append(f'<rect x=".5" y=".5" width="{W-1}" height="{H-1}" fill="none" stroke="{T["line"] if dark else INK}" stroke-width="{1 if dark else 1.5}"/>')
-    write('hero', T, D.svg(W, H, '\n'.join(b), 'Klim Kassymkhan, クリム, backend developer, KBTU, Almaty', style))
+    alt = (f'Klim Kassymkhan, クリム, backend developer, KBTU, Almaty. A katana passes behind a red sun and cuts it in two. '
+           f'Languages: {LANGS}. Frameworks: {STACK}.')
+    write('hero', T, D.svg(W, H, '\n'.join(b), alt, style))
 
 # ------------------------------------------------------------------ status ribbon (light: a red obi band)
+TICKER = ['OPEN TO INTERNSHIPS', 'FREELANCE BACKEND WORK', 'HACKATHON TEAMS', 'ALMATY OR REMOTE',
+          'FASTEST REPLY ON TELEGRAM @DREAMDRAINER', 'DJANGO · FASTAPI · ANGULAR · PLAYWRIGHT']
+
 def ribbon(T):
+    """status band with a running ticker, the same device rdrightnow.com uses for its stack line"""
     W, H = 900, 44; D = Doc(); dark = T['name'] == 'dark'
     bg, tabc, tabt, txt, dot, rec = ((T['panel'], AKA, PAPER, T['text'], NEON, SHU) if dark
                                      else (AKA, INK, PAPER, PAPER, PAPER, PAPER))
+    X0, X1 = 150, 728
+    items = []; x = 0
+    for it in TICKER:
+        items.append(D.text(it, x, 27, 11.5, 'mono500', txt, ls=2.2, opacity=.92))
+        x += D.measure(it, 11.5, 'mono500', 2.2) + 20
+        items.append(f'<circle cx="{x:.1f}" cy="22.5" r="2.2" fill="{dot if dark else PAPER}" opacity=".8"/>')
+        x += 22
+    wr = x
+    speed = 38.0
     style = ('@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}.dot{animation:pulse 2.4s ease-in-out infinite}'
              '@keyframes ring{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.6);opacity:0}}'
-             '.ring{transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}')
-    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', tab(0, 0, 128, H, tabc),
+             '.ring{transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}'
+             f'@keyframes tick{{from{{transform:translateX(0)}}to{{transform:translateX({-wr:.1f}px)}}}}.tick{{animation:tick {wr / speed:.1f}s linear infinite}}')
+    row = ''.join(items)
+    b = [f'<defs><linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".08" stop-color="#fff"/>'
+         f'<stop offset=".92" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+         f'<mask id="mk"><rect x="{X0}" y="0" width="{X1 - X0}" height="{H}" fill="url(#fade)"/></mask></defs>',
+         f'<rect width="{W}" height="{H}" fill="{bg}"/>',
+         f'<g mask="url(#mk)"><g transform="translate({X0 + 14} 0)"><g class="tick">{row}<g transform="translate({wr:.1f} 0)">{row}</g></g></g></g>',
+         tab(0, 0, 128, H, tabc),
          D.text('STATUS', 60, 27, 12, 'mono700', tabt, ls=4, anchor='middle'),
-         D.text('OPEN TO INTERNSHIPS · FREELANCE BACKEND WORK · HACKATHON TEAMS', 164, 27, 11.5, 'mono500', txt, ls=2.2, opacity=.92),
          f'<circle class="ring" cx="752" cy="22" r="4" fill="none" stroke="{dot}" stroke-width="1.2"/>',
          f'<circle class="dot" cx="752" cy="22" r="4" fill="{dot}"/>',
          D.text('RECRUITING', 874, 27, 11, 'mono700', rec, ls=3, anchor='end')]
     if dark: b.append(f'<rect x="0" y="{H-1}" width="{W}" height="1" fill="{BLOOD}"/>')
-    write('ribbon-status', T, D.svg(W, H, '\n'.join(b), 'Status: open to internships, freelance backend work and hackathon teams', style))
+    write('ribbon-status', T, D.svg(W, H, '\n'.join(b), 'Status: ' + ', '.join(t.lower() for t in TICKER), style))
 
 # ------------------------------------------------------------------ chapter strips
 def chapter(T, name, kanji, title, sub, label):
     W, H = 900, 56; D = Doc(); dark = T['name'] == 'dark'
-    style = '@keyframes cut{0%{transform:translateX(-160px)}100%{transform:translateX(1100px)}}.cut{animation:cut 1.1s cubic-bezier(.3,0,.2,1) .2s both}'
+    style = '@keyframes cut{0%{transform:translateX(-160px)}100%{transform:translateX(1100px)}}.cut{animation:cut 1.1s cubic-bezier(.3,0,.2,1) .2s both;opacity:.9}'
     b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
-         f'<rect class="cut" x="0" y="-10" width="3" height="76" fill="{T["text"]}" opacity=".7" transform="skewX(-28)"/>',
+         f'<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{AKA}" stop-opacity="0"/><stop offset=".5" stop-color="{T["hot"]}"/><stop offset="1" stop-color="{AKA}" stop-opacity="0"/></linearGradient></defs>',
+         f'<g transform="skewX(-28)"><rect class="cut" x="0" y="-6" width="1.6" height="68" fill="url(#cg)"/></g>',
          dots(halftone_x(600, 900, 3, 56, 7, 1.6), T['tone'], .3 if dark else .2),
          tab(0, 0, 124, H, AKA), D.text(kanji, 62, 35, 19, 'sans900', PAPER, ls=1, anchor='middle'),
          D.text(title, 160, 35, 16, 'sans900', T['text'], ls=5)]
@@ -197,34 +236,42 @@ SILHOUETTE = (  # side profile facing right in a 200x200 box; hair swept back by
 EYE = 'M111 90 Q117 85.5 123.5 88.5 Q117 92 111 90 Z'
 FIG = 'translate(100 118) scale(.8) translate(-100 -100)'   # figure placement inside the box
 
-def portrait(T, cx, cy):
-    """portrait disc (radius 72) centred at cx, cy: ink figure in profile against a flat red sun"""
-    dark = T['name'] == 'dark'
-    ox, oy = cx - 100, cy - 100                 # box origin
-    sx, sy, sr = cx + 10, cy - 6, 44            # the sun sits behind the face
-    s = [f'<clipPath id="pc"><circle cx="{cx}" cy="{cy}" r="72"/></clipPath>',
-         f'<circle cx="{cx}" cy="{cy}" r="72" fill="{"#1c1216" if dark else PAPER}"/>']
-    g = [dots(halftone_ring(sx, sy, sr, 34, cx - 76, cx + 76, cy - 76, cy + 76, 5, 1.8), AKA, .85),
-         f'<circle cx="{sx}" cy="{sy}" r="{sr}" fill="{AKA}"/>']
-    rnd = random.Random(3); ls = []
-    for i in range(26):
-        a = math.radians(rnd.uniform(0, 360)); r1 = rnd.uniform(sr + 6, sr + 14)
-        ls.append(f'<line x1="{sx+r1*math.cos(a):.1f}" y1="{sy+r1*math.sin(a):.1f}" x2="{sx+86*math.cos(a):.1f}" y2="{sy+86*math.sin(a):.1f}" stroke-width="{rnd.uniform(.5,1.3):.1f}"/>')
-    g.append(f'<g stroke="{AKA}" opacity=".6">{"".join(ls)}</g>')
-    tf = f'translate({ox} {oy}) {FIG}'
-    # rim light: a paper stroke under the ink fill leaves a hairline around the whole figure
-    g.append(f'<path d="{SILHOUETTE}" transform="{tf}" fill="none" stroke="{PAPER}" stroke-width="2.4" stroke-linejoin="round" opacity="{.55 if dark else .9}"/>')
-    g.append(f'<path d="{SILHOUETTE}" transform="{tf}" fill="{INK}"/>')
-    # collar seam and the one glint in the eye
-    g.append(f'<path d="M86 150 C92 160 102 164 114 150" transform="{tf}" fill="none" stroke="{WINE if dark else "#5c5459"}" stroke-width="1.4" stroke-linecap="round"/>')
-    g.append(f'<g class="glint"><path d="{EYE}" transform="{tf}" fill="{NEON if dark else AKA}"/><circle cx="120" cy="88.6" r="1" fill="{PAPER}" transform="{tf}"/></g>')
-    s.append(f'<g clip-path="url(#pc)">{"".join(g)}</g>')
-    s.append(f'<circle cx="{cx}" cy="{cy}" r="72" fill="none" stroke="{AKA}" stroke-width="2.5"/>')
-    s.append(f'<circle class="ring" cx="{cx}" cy="{cy}" r="81" fill="none" stroke="{T["text"]}" stroke-width="1" stroke-dasharray="3 9" opacity=".45"/>')
+PORTRAIT = json.loads((HERE / 'data' / 'portrait.json').read_text())
+
+def portrait(T, cx, cy, r=72):
+    """portrait disc: the owner's photo turned into manga ink (contour, solid hair, screentone) over a flat red sun"""
+    CX, CY, R = PORTRAIT['crop']; k = r / R
+    dots_ = ''.join(f'<circle cx="{x}" cy="{y}" r="{rr}"/>' for x, y, rr in PORTRAIT['dots'])
+    fig = (f'<g transform="translate({cx - CX * k:.2f} {cy - CY * k:.2f}) scale({k:.5f})">'
+           f'<path d="{PORTRAIT["fig"]}" fill="{PAPER}"/><g fill="{INK}">{dots_}</g><path d="{PORTRAIT["ink"]}" fill="{INK}"/></g>')
+    s_ = [f'<clipPath id="pc"><circle cx="{cx}" cy="{cy}" r="{r}"/></clipPath>',
+          f'<g clip-path="url(#pc)"><circle cx="{cx}" cy="{cy}" r="{r}" fill="{AKA}"/>{fig}</g>',
+          f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{AKA}" stroke-width="2.5"/>',
+          f'<circle class="ring" cx="{cx}" cy="{cy}" r="{r + 9}" fill="none" stroke="{T["text"]}" stroke-width="1" stroke-dasharray="3 9" opacity=".45"/>']
     for ang in (45, 135, 225, 315):
-        x = cx + 81 * math.cos(math.radians(ang)); y = cy + 81 * math.sin(math.radians(ang))
-        s.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.5" fill="{T["akatext"]}"/>')
-    return ''.join(s)
+        x = cx + (r + 9) * math.cos(math.radians(ang)); y = cy + (r + 9) * math.sin(math.radians(ang))
+        s_.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.5" fill="{T["akatext"]}"/>')
+    return ''.join(s_)
+
+def odometer(D, num, x, y, size, fkey, fill, cid, delay=0.0, dur=1.2):
+    """a number whose digits roll up once on load (the count-up on rdrightnow.com, done with glyph columns).
+    The resting transform is the final value, so a renderer without CSS animation shows the right number."""
+    lh = size * 1.12; out = [f'<clipPath id="{cid}"><rect x="{x - 2}" y="{y - size * 0.86:.1f}" width="{D.measure(num, size, fkey) + 6:.1f}" height="{size * 1.02:.1f}"/></clipPath>']
+    css = []; cols = []; xx = x
+    digits = [c for c in num]
+    for i, ch in enumerate(digits):
+        w = D.measure(ch, size, fkey)
+        if ch.isdigit():
+            dgt = int(ch); steps = 10 + dgt; name = f'{cid}d{i}'
+            glyphs = ''.join(D.text(str(j % 10), xx, y + j * lh, size, fkey, fill) for j in range(steps + 1))
+            cols.append(f'<g class="{name}" transform="translate(0 {-steps * lh:.1f})">{glyphs}</g>')
+            css.append(f'@keyframes {name}{{from{{transform:translateY(0)}}to{{transform:translateY({-steps * lh:.1f}px)}}}}'
+                       f'.{name}{{animation:{name} {dur + 0.12 * (len(digits) - i):.2f}s cubic-bezier(.16,1,.3,1) {delay:.2f}s both}}')
+        else:
+            cols.append(D.text(ch, xx, y, size, fkey, fill))
+        xx += w
+    out.append(f'<g clip-path="url(#{cid})">{"".join(cols)}</g>')
+    return ''.join(out), ''.join(css)
 
 # ------------------------------------------------------------------ character sheet
 SKILLS = [  # name, tier (3 main, 2 daily, 1 working), where it is used in the projects on this page
@@ -294,8 +341,10 @@ def sheet(T):
     recs = [('484', 'contributions, last 12 months'), ('60', 'day streak, Jul 22 to Sep 19'),
             ('18', 'public repositories'), ('850+', 'tests across two products')]
     y = 118
-    for num, lab in recs:
-        b.append(D.text(num, x0, y, 30, 'sans900', T['text']))
+    extra_css = []
+    for i, (num, lab) in enumerate(recs):
+        svg_, css_ = odometer(D, num, x0, y, 30, 'sans900', T['text'], f'od{i}', delay=0.25 + 0.12 * i)
+        b.append(svg_); extra_css.append(css_)
         b.append(D.text(lab, x0, y + 18, 11, 'mono500', T['muted']))
         y += 56
     b.append(D.text(SNAP, x0, y - 18, 11, 'mono500', T['dim'], ls=1.5))
@@ -320,10 +369,15 @@ def sheet(T):
     b.append(D.text('SEO, several years  ·  Public speaking, several years  ·  Camoufox and curl_cffi account automation', 214, H - 24, 13, 'sans400', T['text'], opacity=.88))
     b.append(frame(W, H, T))
     b.append(f'<rect x="5.5" y="49.5" width="{W-11}" height="{H-55}" fill="none" stroke="{T["text"]}" stroke-opacity="{.12 if dark else .18}"/>')
-    alt = ('Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, '
+    alt = ('Character sheet with a manga ink portrait of Klim looking up at a red sun. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, '
            'Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and '
            'TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, '
            '18 public repositories, 850 plus tests. Passive: SEO and public speaking, several years each; account automation on Camoufox and curl_cffi. Snapshot September 2026.')
+    # page scan: one red line runs down the sheet every 9 s
+    b.append(f'<defs><linearGradient id="scg" x1="0" x2="1"><stop offset="0" stop-color="{AKA}" stop-opacity="0"/><stop offset=".22" stop-color="{AKA}"/>'
+             f'<stop offset=".5" stop-color="{NEON}"/><stop offset=".78" stop-color="{AKA}"/><stop offset="1" stop-color="{AKA}" stop-opacity="0"/></linearGradient></defs>')
+    b.append(f'<rect class="scan" x="0" y="0" width="{W}" height="1.4" fill="url(#scg)" opacity="0"/>')
+    style += ''.join(extra_css) + f'@keyframes scan{{0%{{transform:translateY(-4px);opacity:0}}8%{{opacity:.55}}88%{{opacity:.55}}100%{{transform:translateY({H + 4}px);opacity:0}}}}.scan{{animation:scan 9s linear 1.5s infinite}}'
     write('sheet', T, D.svg(W, H, '\n'.join(b), alt, style))
 
 # ------------------------------------------------------------------ flavor tree numbers
@@ -375,23 +429,23 @@ def kanji_tab(D, x, y, kanji, size=20, fill=AKA, color=PAPER):
 def flavor_pages():
     # page A: the championship build, bottom edge slants up to the right
     W, H = 900, 588; D = Doc()
-    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-champ-desktop.png', 1200, q=84)
+    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-home.jpg', 1200, q=84)
     x0, y0, x1 = 10, 34, 890; sh = (x1 - x0) / iw * ih
     yb_l, yb_r = y0 + sh - 4, y0 + sh - 26
     d = f'M{x0} {y0} H{x1} V{yb_r:.1f} L{x0} {yb_l:.1f} Z'
     b = [f'<defs><clipPath id="a"><path d="{d}"/></clipPath></defs>',
          f'<image href="{src}" x="{x0}" y="{y0}" width="{x1-x0}" height="{sh:.1f}" clip-path="url(#a)" preserveAspectRatio="xMidYMid slice"/>',
          ink_frame(d)]
-    t, tw = kanji_tab(D, 26, 8, '選手権')
+    t, tw = kanji_tab(D, 26, 8, '本番')
     b.append(t)
-    b.append(caption_box(D, 26 + tw + 22, 12, ['CHAMPIONSHIP BUILD · ONEIDEA 2026 × EFES KAZAKHSTAN']))
-    b.append(caption_box(D, x1 - 18, yb_r - 50, ['efesccl-champ.vercel.app'], 12.5, 'mono700', anchor='end'))
-    write_neutral('ft-page-champ', D.svg(W, H, '\n'.join(b), 'Flavor Tree championship build: dark hero, five Efes brands, one search box for what is on your table'))
+    b.append(caption_box(D, 26 + tw + 22, 12, ['PRODUCTION BUILD · ONEIDEA 2026 × EFES KAZAKHSTAN']))
+    b.append(caption_box(D, x1 - 18, yb_r - 50, ['flavor-tree-frontend.vercel.app'], 12.5, 'mono700', anchor='end'))
+    write_neutral('ft-page-champ', D.svg(W, H, '\n'.join(b), 'Flavor Tree home: what will you choose today, 14 Efes KZ beers, flavor pyramid, sommelier bot, one search box for the dish on your table'))
 
     # page B: public desktop build (slanted right edge) + the phone in a red focus-line panel
     W, H = 900, 424; D = Doc()
     top_l, top_r = 26, 4                       # parallel to page A's bottom edge
-    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-desktop.png', 1000, q=86)
+    src, (iw, ih) = jpeg_data(SHOTS / 'flavor-tree-beer.jpg', 1000, q=86)
     xl0, xl1t, xl1b, yb = 10, 604, 586, 414
     ytop = lambda x: top_l + (top_r - top_l) * x / W
     dl = f'M{xl0} {ytop(xl0):.1f} L{xl1t} {ytop(xl1t):.1f} L{xl1b} {yb} L{xl0} {yb} Z'
@@ -400,7 +454,7 @@ def flavor_pages():
     xr0t, xr0b, xr1 = 622, 604, 890
     dr = f'M{xr0t} {ytop(xr0t):.1f} L{xr1} {ytop(xr1):.1f} L{xr1} {yb} L{xr0b} {yb} Z'
     b.append(f'<clipPath id="r"><path d="{dr}"/></clipPath>')
-    msrc, (mw, mh) = jpeg_data(SHOTS / 'flavor-tree-mobile.png', 390, q=88)
+    msrc, (mw, mh) = jpeg_data(SHOTS / 'flavor-tree-home-mobile.jpg', 390, q=88)
     b.append('<clipPath id="scr"><rect x="-73" y="-158" width="146" height="316" rx="17"/></clipPath></defs>')
     b.append(f'<image href="{src}" x="{xl0 - 8}" y="{ytop(xl0):.1f}" width="{pw:.1f}" height="{ph:.1f}" clip-path="url(#l)" preserveAspectRatio="xMinYMin slice"/>')
     # right panel: red, halftone, focus lines around the phone
@@ -420,13 +474,13 @@ def flavor_pages():
              f'<image href="{msrc}" x="-73" y="-158" width="146" height="{146*mh/mw:.1f}" clip-path="url(#scr)" preserveAspectRatio="xMidYMin slice"/>'
              f'<rect x="-22" y="-152" width="44" height="11" rx="5.5" fill="{INK}"/>'
              '</g>')
-    t, tw = kanji_tab(D, 26, ytop(26) - 18, '公開版')
+    t, tw = kanji_tab(D, 26, ytop(26) - 18, '銘柄')
     b.append(t)
-    b.append(caption_box(D, 26 + tw + 22, ytop(26 + tw + 22) - 14, ['PUBLIC BUILD · efes-ccl.vercel.app']))
+    b.append(caption_box(D, 26 + tw + 22, ytop(26 + tw + 22) - 14, ['BEER CARD · SERVING TEMPERATURE, GLASS, NOTES']))
     t, tw = kanji_tab(D, 640, ytop(640) - 18, 'スマホ', fill=INK)
     b.append(t)
     b.append(caption_box(D, 870, yb - 44, ['390 PX VIEWPORT'], 11.5, 'mono700', anchor='end'))
-    write_neutral('ft-page-public', D.svg(W, H, '\n'.join(b), 'Flavor Tree public build on desktop, find the perfect pair from a dish or from a beer, and the same page on a phone'))
+    write_neutral('ft-page-public', D.svg(W, H, '\n'.join(b), 'Flavor Tree beer card with serving temperature, glass, season and flavor notes, and the home page on a phone'))
 
 def write_neutral(name, content):
     (OUT / f'{name}.svg').write_text(content)
@@ -607,8 +661,8 @@ def training_log(T):
 
 # ------------------------------------------------------------------ next episode panel, sits next to the katana GIF
 def next_panel(T):
-    # GIF 498x280 at 50 % beside this panel at 49.8 %
-    W = 448; H = round(W * (0.5 * 280 / 498) / 0.498); D = Doc(); dark = T['name'] == 'dark'
+    # sits beside the Kuniyoshi print panel; both are 448 x 300
+    W, H = 448, 300; D = Doc(); dark = T['name'] == 'dark'
     x0 = 12
     b = [f'<rect x="{x0}" y="0" width="{W-x0}" height="{H}" fill="{T["panel"]}"/>',
          dots(halftone_x(W - 160, W, 0, H, 6, 1.3), T['tone'], .22 if dark else .13),
@@ -616,13 +670,13 @@ def next_panel(T):
     b.append(tab(x0, 0, 108, 34, AKA))
     b.append(D.text('次回予告', x0 + 58, 24, 16, 'sans900', PAPER, ls=1, anchor='middle'))
     b.append(D.text('NEXT EPISODE', x0 + 142, 22, 11, 'mono700', T['akatext'], ls=3))
-    b.append(D.text('The next episode', x0 + 22, 72, 25, 'sans900', T['text'], ls=-.3))
-    b.append(D.text('needs a party.', x0 + 22, 102, 25, 'sans900', T['text'], ls=-.3))
+    b.append(D.text('The next episode', x0 + 22, 80, 25, 'sans900', T['text'], ls=-.3))
+    b.append(D.text('needs a party.', x0 + 22, 110, 25, 'sans900', T['text'], ls=-.3))
     lines = ['Internships, freelance backend work,', 'hackathon squads. Almaty or remote.',
-             'Django, FastAPI, Angular, Telegram bots,', 'or wiring Claude into a real product.']
-    y = 134
+             'Django, FastAPI, Angular, Telegram bots,', 'browser automation, or wiring Claude', 'into a real product.']
+    y = 146
     for i, ln in enumerate(lines):
-        b.append(D.text(ln, x0 + 22, y, 14, 'sans400', T['text'], opacity=.86)); y += 20 + (6 if i == 1 else 0)
+        b.append(D.text(ln, x0 + 22, y, 14, 'sans400', T['text'], opacity=.86)); y += 21 + (8 if i == 1 else 0)
     b.append(D.text('FASTEST REPLY → TELEGRAM', x0 + 22, H - 20, 11.5, 'mono700', T['akatext'], ls=1.5))
     b.append(f'<rect x="{x0+1}" y="1" width="{W-x0-2}" height="{H-2}" fill="none" stroke="{T["frame"]}" stroke-opacity="{T["frame_op"]}" stroke-width="2"/>')
     alt = ('Next episode needs a party: internships, freelance backend work, hackathon squads, Almaty or remote. Django, FastAPI, '
@@ -703,12 +757,11 @@ if __name__ == '__main__':
             quest_smm(T)
             for (key, num, title, stamp, kanji, body, tech, alt), side, lean in zip(QUESTS, ('left', 'right'), (1, 1)):
                 quest_card(T, key, num, title, stamp, kanji, body, tech, alt, side, lean)
-        if want('client'): client_panel(T)
         if want('log'): training_log(T)
         if want('next'): next_panel(T)
         if want('footer'): footer(T)
         if want('buttons'):
-            button(T, 'live', 'vercel', 'LIVE · VERCEL', 'efes-ccl.vercel.app', 'Live: efes-ccl.vercel.app', 'left')
+            button(T, 'live', 'vercel', 'LIVE · VERCEL.APP', 'flavor-tree-frontend', 'Live: flavor-tree-frontend.vercel.app', 'left')
             button(T, 'devrepo', 'github', 'DEV REPO · 93 COMMITS', 'overloooooord/efesccl-champ', 'Dev repo: overloooooord/efesccl-champ, 93 commits', 'mid')
             button(T, 'teamrepo', 'github', 'TEAM REPO', 'Adelllya/Efes-ccl-Flavor', 'Team repo: Adelllya/Efes-ccl-Flavor', 'right')
             button(T, 'telegram', 'telegram', 'TELEGRAM · FASTEST REPLY', '@dreamdrainer', 'Telegram @dreamdrainer', 'left')

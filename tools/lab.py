@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Chapter 6, the lab: three builds from September 2026 that live in private repos (Footfall, FaceTabel, Spread Scanner)."""
 from build_assets import *
+from katana import Katana
+from dividers import divider_saya, divider_draw, divider_daisho
 
 LAB = [
     ('01', 'Footfall', '人', 'PEOPLE COUNTER',
@@ -139,73 +141,89 @@ def ops_panel(T):
     write('ops', T, D.svg(W, H, '\n'.join(b), alt))
 
 CLIENTS = [
-    ('Finance Bridge', 'LIVE', 'Landing for an accounting firm in Kazakhstan.', 'REACT 19 · VITE 7 · TAILWIND 4 · TIKTOK EVENTS API'),
-    ('SHADE Creative People Club', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts.', 'REACT · VITE · TAILWIND 4 · FRAMER MOTION · QR'),
+    ('rdrightnow.com', 'LIVE', 'Multi-page site for an engineering studio: canvas hero, scroll reveals, stack ticker, contact form on Azure Functions.', 'HTML · CSS · JS · AZURE FUNCTIONS'),
+    ('Finance Bridge', 'LIVE', 'Landing for an accounting firm in Kazakhstan with server-side TikTok Events API tracking.', 'REACT 19 · VITE 7 · TAILWIND 4'),
+    ('SHADE', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts, a links hub with a QR code.', 'REACT · VITE · TAILWIND 4 · MOTION'),
 ]
 
 def client_grid(T):
-    RH = 96; rows = (len(CLIENTS) + 1) // 2; W, H = 900, 20 + rows * RH; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2
-    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
-         dots(halftone_x(W - 150, W, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)]
+    """three front ends side by side: name, status, two lines of what it is, the stack"""
+    W, H = 900, 150; D = Doc(); dark = T['name'] == 'dark'; CW = W / 3
+    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>', dots(halftone_x(W - 150, W, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)]
     for i, (name, tag, desc, tech) in enumerate(CLIENTS):
-        x = (i % 2) * CW; y = 12 + (i // 2) * RH
-        b.append(tab(x + 12, y + 4, 30, 22, AKA))
-        b.append(D.text(f'0{i+1}', x + 27, y + 19.5, 10.5, 'mono700', PAPER, ls=1, anchor='middle'))
-        b.append(D.text(name, x + 54, y + 21, 15.5, 'sans900', T['text']))
-        b.append(D.text(tag, x + CW - 18, y + 20, 10.5, 'mono700', T['akatext'] if tag == 'LIVE' else T['muted'], ls=2, anchor='end'))
-        b.append(D.text(desc, x + 54, y + 42, 12.5, 'sans400', T['text'], opacity=.84))
-        b.append(D.text(tech, x + 54, y + 60, 10.5, 'mono500', T['muted'], ls=.8))
-        assert D.measure(tech, 10.5, 'mono500', .8) < CW - 72 and D.measure(desc, 12.5, 'sans400') < CW - 72, name
-        if i < len(CLIENTS) - 2: b.append(f'<line x1="{x+54}" y1="{y+RH-6:.1f}" x2="{x+CW-18}" y2="{y+RH-6:.1f}" stroke="{T["line"]}" stroke-width="1.2"/>')
-    b.append(f'<line x1="{CW}" y1="18" x2="{CW}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
+        x = i * CW
+        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H - 18}" stroke="{T["line"]}" stroke-width="1.5"/>')
+        b.append(tab(x, 0, 40, 26, AKA))
+        b.append(D.text(f'0{i+1}', x + 20, 17.5, 10.5, 'mono700', PAPER, ls=1, anchor='middle'))
+        b.append(D.text(tag, x + CW - 20, 18, 10.5, 'mono700', T['akatext'], ls=2, anchor='end'))
+        b.append(D.text(name, x + 22, 56, 17, 'sans900', T['text']))
+        lines = D.wrap(desc, 12.5, 'sans400', CW - 44)
+        assert len(lines) <= 3, (name, lines)
+        y = 80
+        for ln in lines:
+            b.append(D.text(ln, x + 22, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 17
+        assert D.measure(tech, 10.5, 'mono500', .8) < CW - 40, tech
+        b.append(D.text(tech, x + 22, H - 16, 10.5, 'mono500', T['muted'], ls=.8))
     b.append(frame(W, H, T, 1, 2))
-    alt = ('Frontend. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. '
-           'SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. '
-           '')
+    alt = 'Frontend. ' + ' '.join(f'{n}: {d} {t.title()}. ' for n, _, d, t in CLIENTS)
     write('clients', T, D.svg(W, H, '\n'.join(b), alt))
 
-def divider(T):
-    """katana divider between chapters: blade across the column, a glint that runs along it"""
-    W, H = 900, 54; D = Doc(); dark = T['name'] == 'dark'
-    style = '@keyframes dg{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(720px) skewX(-30deg)}}.dg{animation:dg 3s cubic-bezier(.4,0,.2,1) infinite}'
-    b = [f'<line x1="0" y1="27" x2="900" y2="27" stroke="{AKA}" stroke-opacity=".25"/>',
-         f'<g transform="translate(40 27)">{katana(T, 820, "dg")}</g>',
-         D.text('斬', 892, 40, 22, 'sans900', T['wine'] if dark else AKA, anchor='end', opacity=.9 if dark else .5)]
-    write('divider', T, D.svg(W, H, '\n'.join(b), 'Katana divider', style))
+def fe_pages():
+    """the three sites as one manga page: a big panel and two stacked ones, slanted gutters, kanji tabs"""
+    W, H = 900, 420; D = Doc()
+    top_l, top_r = 22, 6
+    ytop = lambda x: top_l + (top_r - top_l) * x / W
+    # left: rdrightnow.com, slanted right edge
+    xl0, xl1t, xl1b, yb = 10, 560, 536, 410
+    dl = f'M{xl0} {ytop(xl0):.1f} L{xl1t} {ytop(xl1t):.1f} L{xl1b} {yb} L{xl0} {yb} Z'
+    src, (iw, ih) = jpeg_data(SHOTS / 'rdrightnow-home.jpg', 1100, q=84)
+    ph = yb - ytop(xl0); pw = ph * iw / ih
+    b = [f'<defs><clipPath id="l"><path d="{dl}"/></clipPath>']
+    # right column: two panels split by a slanted gutter
+    xr0t, xr0b, xr1 = 576, 552, 890
+    ym_l, ym_r = 212, 196                     # gutter between Finance Bridge and SHADE
+    dt = f'M{xr0t} {ytop(xr0t):.1f} L{xr1} {ytop(xr1):.1f} L{xr1} {ym_r} L{xr0t - (xr0t - xr0b) * (ym_l - ytop(xr0t)) / (yb - ytop(xr0t)):.1f} {ym_l} Z'
+    xg = xr0t - (xr0t - xr0b) * (ym_l + 14 - ytop(xr0t)) / (yb - ytop(xr0t))
+    db = f'M{xg:.1f} {ym_l + 14} L{xr1} {ym_r + 14} L{xr1} {yb} L{xr0b} {yb} Z'
+    b.append(f'<clipPath id="t"><path d="{dt}"/></clipPath><clipPath id="bb"><path d="{db}"/></clipPath></defs>')
+    b.append(f'<image href="{src}" x="{xl0}" y="{ytop(xl0):.1f}" width="{pw:.1f}" height="{ph:.1f}" clip-path="url(#l)" preserveAspectRatio="xMinYMin slice"/>')
+    for fn, clip, y0, h in (('finance-bridge-home.jpg', 't', ytop(xr0b), ym_l - ytop(xr0b)), ('shade-home.jpg', 'bb', ym_r + 14, yb - ym_r - 14)):
+        s2, (w2, h2) = jpeg_data(SHOTS / fn, 760, crop=(30, 0, 1440, 900) if fn.startswith('finance') else None, q=84)
+        ww = xr1 - xr0b + 30; hh = ww * h2 / w2
+        b.append(f'<image href="{s2}" x="{xr0b - 20}" y="{y0 - 4:.1f}" width="{ww:.1f}" height="{hh:.1f}" clip-path="url(#{clip})" preserveAspectRatio="xMinYMin slice"/>')
+    for d in (dl, dt, db):
+        b.append(ink_frame(d))
+    for (x, y, kanji, cap, fill) in ((26, ytop(26) - 18, '研究', 'RDRIGHTNOW.COM', AKA), (xr0t + 14, ytop(xr0t + 14) - 18, '会計', 'FINANCE BRIDGE', INK), (xg + 16, ym_l + 2, '美術', 'SHADE', AKA)):
+        t, tw = kanji_tab(D, x, y, kanji, fill=fill)
+        b.append(t)
+        b.append(caption_box(D, x + tw + 22, y + 4, [cap]))
+    write_neutral('fe-pages', D.svg(W, H, '\n'.join(b), 'Three front ends: rdrightnow.com with its R and D hero, Finance Bridge accounting landing, SHADE creative club site'))
 
-def katana_panel(T):
-    """next-episode companion: a katana over the red sun, focus lines, blood drops; replaces the external GIF"""
-    W = 448; H = round(W * (0.5 * 280 / 498) / 0.498); D = Doc(); dark = T['name'] == 'dark'
-    SX, SY, SR = 250, 132, 92; rnd = random.Random(21)
-    style = ('@keyframes kp{0%{transform:translateX(0) skewX(-30deg)}100%{transform:translateX(300px) skewX(-30deg)}}.kp{animation:kp 2.2s cubic-bezier(.2,.7,.2,1) infinite}'
-             + ''.join(f'@keyframes dr{i}{{0%{{transform:translateY(0);opacity:0}}10%{{opacity:1}}100%{{transform:translateY({70+i*20}px);opacity:0}}}}.dr{i}{{animation:dr{i} {2.4+i*.7:.1f}s ease-in {i*.9:.1f}s infinite}}' for i in range(3)))
-    b = [f'<defs><clipPath id="pf"><rect width="{W}" height="{H}"/></clipPath></defs>',
-         f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>', '<g clip-path="url(#pf)">',
-         dots(halftone_ring(SX, SY, SR, 120, 0, W, 0, H, 7, 2.2), T['tone'], .5 if dark else .35)]
-    ls = []
-    for i in range(40):
-        a = math.radians(rnd.uniform(0, 360)); r1 = rnd.uniform(SR + 10, SR + 40); r2 = 330
-        ls.append(f'<line x1="{SX+r1*math.cos(a):.0f}" y1="{SY+r1*math.sin(a):.0f}" x2="{SX+r2*math.cos(a):.0f}" y2="{SY+r2*math.sin(a):.0f}" stroke-width="{rnd.uniform(.6,2):.1f}"/>')
-    b.append(f'<g stroke="{AKA}" opacity=".55">{"".join(ls)}</g>')
-    b.append(f'<circle cx="{SX}" cy="{SY}" r="{SR}" fill="{AKA}"/>')
-    b.append(D.text('斬', W - 16, H - 18, 96, 'sans900', T['wine'], anchor='end', opacity=T['wine_op'] * 1.1))
-    b.append(f'<g transform="translate(36 {H-26}) rotate(-38)">{katana(T, 400, "kp")}</g>')
-    for i, (dx, dy) in enumerate([(300, 96), (322, 78), (284, 112)]):
-        b.append(f'<path class="dr{i}" d="M{dx} {dy} c-3 5 -3 9 0 11 c3 -2 3 -6 0 -11z" fill="{T["hot"]}"/>')
-    b.append('</g>')
-    b.append(D.text('一刀', 24, 40, 24, 'sans900', T['text'], ls=2))
-    b.append(D.text('ONE CUT · SHIPPED', 24, 58, 10.5, 'mono700', T['akatext'], ls=3))
-    b.append(f'<rect x="1" y="1" width="{W-2}" height="{H-2}" fill="none" stroke="{T["frame"]}" stroke-opacity="{T["frame_op"]}" stroke-width="2"/>')
-    write('katana', T, D.svg(W, H, '\n'.join(b), 'A katana drawn across the red sun, focus lines, three drops', style))
+def print_panel():
+    """next episode: a ronin drawing his sword, Utagawa Kuniyoshi, 1847 (public domain), printed in ink and red"""
+    W, H = 448, 300; D = Doc()
+    src, (iw, ih) = jpeg_data(SHOTS / 'kuniyoshi-onodera-duotone.jpg', 896, q=84)
+    d = f'M4 4 H{W - 4} V{H - 4} H4 Z'
+    b = [f'<defs><clipPath id="pp"><path d="{d}"/></clipPath></defs>',
+         f'<image href="{src}" x="4" y="4" width="{W - 8}" height="{H - 8}" clip-path="url(#pp)" preserveAspectRatio="xMidYMid slice"/>',
+         ink_frame(d)]
+    t, tw = kanji_tab(D, 16, 12, '忠臣')
+    b.append(t)
+    b.append(caption_box(D, W - 14, H - 42, ['UTAGAWA KUNIYOSHI · 1847'], 10.5, 'mono700', anchor='end'))
+    write_neutral('print', D.svg(W, H, '\n'.join(b), 'Onodera Junai Hidetomo drawing his sword, from Seichu gishi den by Utagawa Kuniyoshi, 1847, printed in ink and red'))
 
 if __name__ == '__main__':
     for T in (DARK, LIGHT):
-        divider(T)
-        katana_panel(T)
+        divider_saya(T)
+        divider_draw(T)
+        divider_daisho(T)
         auto_panel(T)
         ops_panel(T)
         client_grid(T)
+        next_panel(T)
         lab_panel(T)
         chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 4: automation')
-        chapter(T, '06', '第六話', 'FRONTEND', 'FINANCE BRIDGE  ·  SHADE CREATIVE PEOPLE CLUB  ·  REACT  ·  VITE  ·  TAILWIND', 'Chapter 6: frontend')
+        chapter(T, '06', '第六話', 'FRONTEND', 'RDRIGHTNOW.COM  ·  FINANCE BRIDGE  ·  SHADE  ·  REACT  ·  VITE  ·  AZURE', 'Chapter 6: frontend')
         chapter(T, '05', '第五話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 5: in the lab')
+    fe_pages()
+    print_panel()

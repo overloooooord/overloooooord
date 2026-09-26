@@ -36,7 +36,7 @@ MONO = {400: '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Regular
 # every CJK character any asset uses; the build fails loudly if a glyph is missing
 CJK = ('クリム赤開発者バックエンド第一二三四五六零話次回予告キャラクターシートステータス記録スキル'
        '電波選牧犬学麦つづく選手権公開版スマホ連続日印依頼修行道具主力常用実戦ゴドピッ持ち物'
-       '年月火水木金土本番研究所験人顔差計七自動化ウザブメルボト運用特技券斬刀')
+       '年月火水木金土本番研究所験人顔差計七自動化ウザブメルボト運用特技券斬刀銘柄会計美術忠臣')
 LATIN = ''.join(chr(c) for c in range(0x20, 0x7f)) + '·×→←↓↑°…’'
 
 
@@ -181,6 +181,8 @@ class Doc:
         return lines
 
     def svg(self, w, h, body, label, style=''):
+        if style:   # viewers who ask the OS for less motion get the resting frame, which is always the final state
+            style += '@media (prefers-reduced-motion: reduce){*{animation:none!important}}'
         st = f'<style>{style}</style>\n' if style else ''
         return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{label}">\n'
                 f'<title>{label}</title>\n{st}<defs>{"".join(self.defs)}</defs>\n{body}\n</svg>\n')
