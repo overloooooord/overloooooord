@@ -15,13 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Generate snake SVGs
+      - name: Generate snake SVGs (akai palette)
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/github-snake.svg?palette=github
-            dist/github-snake-dark.svg?palette=github-dark&color_snake=#7aa2f7
+            dist/github-snake.svg?palette=github-light&color_snake=#c8102e&color_dots=#e4d9cc,#f2b3bc,#e2717e,#c8102e,#6e0a18
+            dist/github-snake-dark.svg?palette=github-dark&color_snake=#ff2a2a&color_dots=#21161a,#4a0d17,#7a0a1a,#c8102e,#ff2a2a
 
       - name: Push to output branch
         uses: crazy-max/ghaction-github-pages@v4
