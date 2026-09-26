@@ -11,7 +11,7 @@ Final years of Software Engineering at KBTU, Almaty. Three years of building Pyt
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-01.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-01-light.svg"><img src="assets/chapter-01.svg" width="100%" alt="Chapter 1: character sheet"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/sheet.svg"><source media="(prefers-color-scheme: light)" srcset="assets/sheet-light.svg"><img src="assets/sheet.svg" width="100%" alt="Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, 18 public repositories, 850 plus tests. Snapshot September 2026."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/sheet.svg"><source media="(prefers-color-scheme: light)" srcset="assets/sheet-light.svg"><img src="assets/sheet.svg" width="100%" alt="Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, 18 public repositories, 850 plus tests. Passive: SEO and public speaking, several years each; account automation on Camoufox and curl_cffi. Snapshot September 2026."></picture>
 
 <br>
 
@@ -51,6 +51,8 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/automation.svg"><source media="(prefers-color-scheme: light)" srcset="assets/automation-light.svg"><img src="assets/automation.svg" width="100%" alt="Automation. Browser and HTTP: Playwright and Camoufox where a page needs a real browser, curl_cffi and aiohttp where it does not, async pipelines with retries, proxy pools and per-account profiles, a React and Flask dashboard. Mail and auth flows: IMAP polling for verification links and OTP codes, OAuth 2.0 chains, session cookies and 2FA scripted end to end. Bots and schedulers: aiogram Telegram bots with a publishing queue (igtg, 251 tests), weekly report jobs, lead collection from OpenStreetMap, GitHub Actions and Azure Functions."></picture>
 
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/ops.svg"><source media="(prefers-color-scheme: light)" srcset="assets/ops-light.svg"><img src="assets/ops.svg" width="100%" alt="Ticket Manager, private repo: support case desk for a fleet of accounts with CSV import, OAuth login chain, 2FA over IMAP, per-account proxies, batch case creation, FastAPI and WebSocket live feed, SQLite, Vite SPA, 9k lines of Python. Account automation for Cloudflare, YouTube, Instagram and TikTok on Camoufox and curl_cffi: mail verification, OTP parsing, proxy pools, results to JSON and CSV, live console dashboard."></picture>
+
 <sub>Three years of this before the products: pipelines that log in, verify, collect and report on their own, with a dashboard to watch them and a Telegram bot to steer them. Repos with client accounts and credentials stay private.</sub>
 
 <br>
@@ -63,11 +65,9 @@ Sensory beer education for Efes Kazakhstan, built for OneIdea Championship 2026.
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-06.svg"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-06-light.svg"><img src="assets/chapter-06.svg" width="100%" alt="Chapter 6: client work"></picture>
 
-<p>
-<img src="https://media.tenor.com/gHrQbqYqN_sAAAAC/flor.gif" width="42%" alt="Red spider lilies on black"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/client-work.svg"><source media="(prefers-color-scheme: light)" srcset="assets/client-work-light.svg"><img src="assets/client-work.svg" width="57.8%" alt="Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, server-side TikTok Events API tracking, live. rdrightnow.com: corporate site with an Azure Functions contact form and Azure Communication Services email, private repo. Fara Ideal LED: landing with a Telegram lead form and a PDF proposal, HTML and JS, Node, Vercel, private repo."></picture>
-</p>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/clients.svg"><source media="(prefers-color-scheme: light)" srcset="assets/clients-light.svg"><img src="assets/clients.svg" width="100%" alt="Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. rdrightnow.com: corporate site with an Azure Functions contact form, private repo. Fara Ideal LED: landing with a Telegram lead form and a PDF proposal, private repo."></picture>
 
-<sub>Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. The other two sites belong to the clients, so the repos stay private.</sub>
+<sub>Finance Bridge: <a href="https://finance-bridge-one.vercel.app">live</a> · <a href="https://github.com/Adelllya/Finance_Bridge">source</a>. SHADE: <a href="https://shade-web-five.vercel.app">live</a>. The other two sites belong to the clients, so the repos stay private.</sub>
 
 <br>
 

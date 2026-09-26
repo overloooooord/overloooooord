@@ -100,9 +100,78 @@ def auto_panel(T):
            'Telegram bots with a publishing queue (igtg, 251 tests), weekly report jobs, lead collection from OpenStreetMap, GitHub Actions and Azure Functions.')
     write('automation', T, D.svg(W, H, '\n'.join(b), alt, style))
 
+OPS = [
+    ('TICKET MANAGER', '券', 'OPS DESK · PRIVATE REPO',
+     'Support case desk for a fleet of accounts: CSV import, OAuth login chain, 2FA codes over IMAP, per-account proxies and sessions, batch case creation with delays and a stop button. FastAPI + WebSocket live feed, SQLite, Vite SPA. 9k lines of Python.',
+     'FASTAPI · WEBSOCKET · AIOHTTP · SQLITE · VITE'),
+    ('ACCOUNT AUTOMATION', '運用', 'CLOUDFLARE · YOUTUBE · INSTAGRAM · TIKTOK',
+     'Registration and onboarding flows for Cloudflare, YouTube, Instagram and TikTok. Camoufox where the page needs a real browser, pure requests on curl_cffi where it does not: 30 to 40 seconds per account, mail verification and OTP parsing, proxy pools, results to JSON and CSV, errors to a journal, live console dashboard.',
+     'CAMOUFOX · CURL_CFFI · IMAP · PROXIES · CSV'),
+]
+
+def ops_panel(T):
+    W, H = 900, 250; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2
+    b = ['<defs>' + ''.join(f'<clipPath id="o{i}"><rect x="{i*CW}" y="0" width="{CW}" height="{H}"/></clipPath>' for i in range(2)) + '</defs>',
+         f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>']
+    for i, (title, kanji, stamp, body, tech) in enumerate(OPS):
+        x = i * CW
+        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
+        b.append(f'<g clip-path="url(#o{i})">' + dots(halftone_x(x + CW - 150, x + CW, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)
+                 + D.text(kanji, x + CW - 14, H - 16, 110, 'sans900', T['wine'], anchor='end', opacity=T['wine_op']) + '</g>')
+        b.append(tab(x, 0, 46, 28, AKA))
+        b.append(D.text(f'0{i+1}', x + 23, 19, 11, 'mono700', PAPER, ls=2, anchor='middle'))
+        b.append(D.text(stamp, x + CW - 22, 19, 10.5, 'mono700', T['akatext'], ls=2, anchor='end'))
+        b.append(D.text(title, x + 24, 66, 17, 'sans900', T['text'], ls=2))
+        inner = CW - 48
+        lines = D.wrap(body, 12.5, 'sans400', inner)
+        assert len(lines) <= 6, (title, len(lines))
+        assert D.measure(tech, 10.5, 'mono500', 1.2) <= inner, tech
+        y = 94
+        for ln in lines:
+            b.append(D.text(ln, x + 24, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 18
+        b.append(f'<rect x="{x+24}" y="{H-42}" width="28" height="2.5" fill="{AKA}"/>')
+        b.append(D.text(tech, x + 24, H - 20, 10.5, 'mono500', T['muted'], ls=1.2))
+    b.append(frame(W, H, T, 1, 2))
+    alt = ('Ticket Manager, private repo: support case desk for a fleet of accounts with CSV import, OAuth login chain, 2FA over IMAP, '
+           'per-account proxies, batch case creation, FastAPI and WebSocket live feed, SQLite, Vite SPA, 9k lines of Python. '
+           'Account automation for Cloudflare, YouTube, Instagram and TikTok on Camoufox and curl_cffi: mail verification, OTP parsing, '
+           'proxy pools, results to JSON and CSV, live console dashboard.')
+    write('ops', T, D.svg(W, H, '\n'.join(b), alt))
+
+CLIENTS = [
+    ('Finance Bridge', 'LIVE', 'Landing for an accounting firm in Kazakhstan.', 'REACT 19 · VITE 7 · TAILWIND 4 · TIKTOK EVENTS API'),
+    ('SHADE Creative People Club', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts.', 'REACT · VITE · TAILWIND 4 · FRAMER MOTION · QR'),
+    ('rdrightnow.com', 'PRIVATE REPO', 'Corporate site with an Azure Functions contact form.', 'AZURE STATIC WEB APPS · FUNCTIONS · ACS EMAIL'),
+    ('Fara Ideal LED', 'PRIVATE REPO', 'Landing with a Telegram lead form and a PDF proposal.', 'HTML / JS · NODE · VERCEL'),
+]
+
+def client_grid(T):
+    W, H = 900, 212; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2; RH = (H - 20) / 2
+    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
+         dots(halftone_x(W - 150, W, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)]
+    for i, (name, tag, desc, tech) in enumerate(CLIENTS):
+        x = (i % 2) * CW; y = 12 + (i // 2) * RH
+        b.append(tab(x + 12, y + 4, 30, 22, AKA))
+        b.append(D.text(f'0{i+1}', x + 27, y + 19.5, 10.5, 'mono700', PAPER, ls=1, anchor='middle'))
+        b.append(D.text(name, x + 54, y + 21, 15.5, 'sans900', T['text']))
+        b.append(D.text(tag, x + CW - 18, y + 20, 10.5, 'mono700', T['akatext'] if tag == 'LIVE' else T['muted'], ls=2, anchor='end'))
+        b.append(D.text(desc, x + 54, y + 42, 12.5, 'sans400', T['text'], opacity=.84))
+        b.append(D.text(tech, x + 54, y + 60, 10.5, 'mono500', T['muted'], ls=.8))
+        assert D.measure(tech, 10.5, 'mono500', .8) < CW - 72 and D.measure(desc, 12.5, 'sans400') < CW - 72, name
+        if i < 2: b.append(f'<line x1="{x+54}" y1="{y+RH-6:.1f}" x2="{x+CW-18}" y2="{y+RH-6:.1f}" stroke="{T["line"]}" stroke-width="1.2"/>')
+    b.append(f'<line x1="{CW}" y1="18" x2="{CW}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
+    b.append(frame(W, H, T, 1, 2))
+    alt = ('Client work. Finance Bridge: landing for an accounting firm in Kazakhstan, React 19, Vite 7, Tailwind 4, TikTok Events API, live. '
+           'SHADE Creative People Club: site for the KBTU creative club, React, Vite, Tailwind 4, Framer Motion, QR code, live. '
+           'rdrightnow.com: corporate site with an Azure Functions contact form, private repo. Fara Ideal LED: landing with a Telegram lead form and a PDF proposal, private repo.')
+    write('clients', T, D.svg(W, H, '\n'.join(b), alt))
+
 if __name__ == '__main__':
     for T in (DARK, LIGHT):
         auto_panel(T)
+        ops_panel(T)
+        client_grid(T)
         lab_panel(T)
-        chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH FLOWS  ·  BOTS  ·  SCHEDULERS', 'Chapter 4: automation')
+        chapter(T, '04', '第四話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 4: automation')
+        chapter(T, '06', '第六話', 'CLIENT WORK', 'FINANCE BRIDGE  ·  SHADE  ·  RDRIGHTNOW.COM  ·  FARA IDEAL LED', 'Chapter 6: client work')
         chapter(T, '05', '第五話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 5: in the lab')

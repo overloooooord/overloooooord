@@ -213,7 +213,7 @@ TIER = {3: 'MAIN', 2: 'DAILY', 1: 'WORKING'}
 INVENTORY = 'FastAPI · React · Next.js · Redis · SQLite · Linux · GitHub Actions · Vercel · Azure · Cloudflare'
 
 def sheet(T):
-    W, H = 900, 540; D = Doc(); dark = T['name'] == 'dark'
+    W, H = 900, 574; D = Doc(); dark = T['name'] == 'dark'
     style = ('@keyframes spin{to{transform:rotate(360deg)}}.ring{transform-origin:150px 170px;animation:spin 40s linear infinite}'
              '@keyframes hot{0%,100%{opacity:1}50%{opacity:.35}}.hot{animation:hot 2.4s ease-in-out infinite}'
              '@keyframes glint{0%,70%,100%{opacity:1}80%{opacity:.2}}.glint{animation:glint 3.2s ease-in-out infinite}')
@@ -238,7 +238,7 @@ def sheet(T):
         b.append(f'<line x1="28" y1="{y+11}" x2="{C1-18}" y2="{y+11}" stroke="{T["text"]}" stroke-opacity="{.1 if dark else .16}"/>')
         y += 31
     for x in (C1, C2):
-        b.append(f'<line x1="{x}" y1="44" x2="{x}" y2="{H-58}" stroke="{T["line"]}" stroke-width="1.5"/>')
+        b.append(f'<line x1="{x}" y1="44" x2="{x}" y2="{H-92}" stroke="{T["line"]}" stroke-width="1.5"/>')
     # skills with tiers and where they were used
     x0 = C1 + 24; xr = C2 - 22
     b.append(D.text('SKILLS', x0, 76, 11.5, 'mono700', T['akatext'], ls=4))
@@ -282,16 +282,20 @@ def sheet(T):
     # vertical status label
     b.append(D.vtext('ステータス', 880, 60, 13, 'sans700', AKA, gap=4))
     # inventory strip along the bottom
-    b.append(f'<rect x="0" y="{H-58}" width="{W}" height="1.5" fill="{T["line"]}"/>')
-    b.append(D.text('INVENTORY', 28, H - 24, 11.5, 'mono700', T['akatext'], ls=4))
-    b.append(D.text('持ち物', 28 + D.measure('INVENTORY', 11.5, 'mono700', 4) + 10, H - 23, 12, 'sans700', T['muted']))
-    b.append(D.text(INVENTORY, 214, H - 24, 13, 'sans400', T['text'], opacity=.88))
+    b.append(f'<rect x="0" y="{H-92}" width="{W}" height="1.5" fill="{T["line"]}"/>')
+    b.append(D.text('INVENTORY', 28, H - 58, 11.5, 'mono700', T['akatext'], ls=4))
+    b.append(D.text('持ち物', 28 + D.measure('INVENTORY', 11.5, 'mono700', 4) + 10, H - 57, 12, 'sans700', T['muted']))
+    b.append(D.text(INVENTORY, 214, H - 58, 13, 'sans400', T['text'], opacity=.88))
+    b.append(f'<line x1="28" y1="{H-42}" x2="{W-28}" y2="{H-42}" stroke="{T["text"]}" stroke-opacity="{.1 if dark else .16}"/>')
+    b.append(D.text('PASSIVE', 28, H - 24, 11.5, 'mono700', T['akatext'], ls=4))
+    b.append(D.text('特技', 28 + D.measure('PASSIVE', 11.5, 'mono700', 4) + 10, H - 23, 12, 'sans700', T['muted']))
+    b.append(D.text('SEO, several years  ·  Public speaking, several years  ·  Camoufox and curl_cffi account automation', 214, H - 24, 13, 'sans400', T['text'], opacity=.88))
     b.append(frame(W, H, T))
     b.append(f'<rect x="5.5" y="49.5" width="{W-11}" height="{H-55}" fill="none" stroke="{T["text"]}" stroke-opacity="{.12 if dark else .18}"/>')
     alt = ('Character sheet. Class: Backend Developer, level 3 for three years of practice, guild KBTU Software Engineering, '
            'Almaty. Skills by tier: main Python, Django and DRF, PostgreSQL; daily Telegram bots with aiogram, Angular and '
            'TypeScript, automation with Playwright and asyncio; working Claude API, Docker, Java. Records: 484 contributions in the last 12 months, 60 day streak, '
-           '18 public repositories, 850 plus tests. Snapshot September 2026.')
+           '18 public repositories, 850 plus tests. Passive: SEO and public speaking, several years each; account automation on Camoufox and curl_cffi. Snapshot September 2026.')
     write('sheet', T, D.svg(W, H, '\n'.join(b), alt, style))
 
 # ------------------------------------------------------------------ flavor tree numbers
