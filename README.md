@@ -5,7 +5,7 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/ribbon-status.svg?v=688a6682"><source media="(prefers-color-scheme: light)" srcset="assets/ribbon-status-light.svg?v=bffa312c"><img src="assets/ribbon-status.svg?v=688a6682" width="100%" alt="Status: open to internships, freelance backend work, hackathon teams, almaty or remote, fastest reply on telegram @dreamdrainer, django · fastapi · angular · playwright"></picture>
 </p>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/protagonist.svg?v=c6e29805"><source media="(prefers-color-scheme: light)" srcset="assets/protagonist-light.svg?v=234504b4"><img src="assets/protagonist.svg?v=c6e29805" width="100%" alt="Prologue: a portrait of Klim Kassymkhan. Backend developer, Python first. Now: building SMM Radar, Telegram analytics, private beta; shipped Flavor Tree for OneIdea 2026 × Efes; studying Software Engineering at KBTU, final years; open to Internships · freelance backend · hackathons; also SEO · public speaking, several years each."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/protagonist.svg?v=6135b994"><source media="(prefers-color-scheme: light)" srcset="assets/protagonist-light.svg?v=8e215ff1"><img src="assets/protagonist.svg?v=6135b994" width="100%" alt="Prologue: a portrait of Klim Kassymkhan. Backend developer, Python first. Now: building SMM Radar, Telegram analytics, private beta; shipped Flavor Tree for OneIdea 2026 × Efes; studying Software Engineering at KBTU, final years; open to Internships · freelance backend · hackathons; also SEO · public speaking, several years each."></picture>
 
 <br>
 
