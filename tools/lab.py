@@ -1,172 +1,69 @@
 #!/usr/bin/env python3
-"""Chapter 6, the lab: three builds from September 2026 that live in private repos (Footfall, FaceTabel, Spread Scanner)."""
+"""Chapter 3, the workshop: automation and lab builds as one tile grid (echoing the arsenal), the frontend page of
+screenshots, and the Kuniyoshi print for the next episode. Also runs the katana dividers."""
 from build_assets import *
 from katana import Katana
 from dividers import divider_saya, divider_draw, divider_daisho
 
-LAB = [
-    ('01', 'Footfall', '人', 'PEOPLE COUNTER',
-     'Visitor counter for shops and cafes on the Hikvision and Dahua cameras they already own. YOLOX on OpenCV DNN, line crossing, live dashboard.',
-     'OPENCV 5 · ONNX · RTSP · FASTAPI'),
-    ('02', 'FaceTabel', '顔', 'STAFF ATTENDANCE',
-     'Consent-only face check-in for staff: YuNet and SFace on OpenCV 5, kiosk greeting screen. 0 false matches in 300 LFW pairs.',
-     'OPENCV 5 · YUNET · SFACE · SQLITE'),
-    ('03', 'Spread Scanner', '差', 'CRYPTO ARBITRAGE',
-     'Spot spreads and funding arbitrage across seven exchanges: async adapters, route checks. Sold as a paid Telegram channel.',
-     'PYTHON ASYNCIO · 7 EXCHANGES'),
+# (title, tag, kanji watermark, one line, tech)
+WORKSHOP = [
+    ('01', '忍', 'AUTOMATION', [
+        ('Ticket Manager', 'PRIVATE REPO', '券', 'Support desk for an account fleet. 9k lines.', 'FASTAPI · WEBSOCKET'),
+        ('Account automation', '4 PLATFORMS', '運', 'Onboarding for Cloudflare, YouTube, Instagram, TikTok.', 'CAMOUFOX · CURL_CFFI'),
+        ('Mail and bots', 'PIPELINES', '電', 'OTP over IMAP, OAuth chains, aiogram control bots.', 'IMAP · OAUTH · AIOGRAM')]),
+    ('02', '験', 'IN THE LAB', [
+        ('Footfall', 'PEOPLE COUNTER', '人', 'People counter on cameras a shop already has.', 'OPENCV · YOLOX · RTSP'),
+        ('FaceTabel', 'STAFF CHECK-IN', '顔', 'Consent-only face check-in for staff.', 'YUNET · SFACE · OPENCV'),
+        ('Spread Scanner', 'CRYPTO ARBITRAGE', '差', 'Spot and funding spreads across seven exchanges.', 'ASYNCIO · 7 EXCHANGES')]),
 ]
 
-def lab_panel(T):
-    W, H = 900, 262; D = Doc(); dark = T['name'] == 'dark'; CW = W / 3
-    style = '@keyframes hot{0%,100%{opacity:1}50%{opacity:.35}}.hot{animation:hot 2.4s ease-in-out infinite}'
-    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>']
-    for i, (num, title, kanji, stamp, body, tech) in enumerate(LAB):
-        x = i * CW
-        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H-52}" stroke="{T["line"]}" stroke-width="1.5"/>')
-        b.append(f'<g clip-path="url(#c{i})">' + dots(halftone_x(x + CW - 120, x + CW, 0, H - 52, 6, 1.2), T['tone'], .2 if dark else .12) + '</g>')
-        b.append(D.text(kanji, x + CW - 14, 150, 104, 'sans900', T['wine'], anchor='end', opacity=T['wine_op']))
-        b.append(tab(x, 0, 46, 28, AKA))
-        b.append(D.text(num, x + 23, 19, 11, 'mono700', PAPER, ls=2, anchor='middle'))
-        b.append(D.text(stamp, x + CW - 22, 19, 10.5, 'mono700', T['akatext'], ls=2, anchor='end'))
-        b.append(D.text(title, x + 24, 68, 22, 'sans900', T['text'], ls=-.2))
-        y = 98; inner = CW - 48
-        lines = D.wrap(body, 12.5, 'sans400', inner)
-        assert len(lines) <= 4, (title, lines)
-        assert D.measure(tech, 10.5, 'mono500', 1.2) <= inner, tech
-        for ln in lines:
-            b.append(D.text(ln, x + 24, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 18
-        b.append(f'<rect x="{x+24}" y="{H-92}" width="28" height="2.5" fill="{AKA}"/>')
-        b.append(D.text(tech, x + 24, H - 70, 10.5, 'mono500', T['muted'], ls=1.2))
-    b.insert(0, '<defs>' + ''.join(f'<clipPath id="c{i}"><rect x="{i*CW}" y="0" width="{CW}" height="{H-52}"/></clipPath>' for i in range(3)) + '</defs>')
-    # status strip
-    b.append(f'<rect x="0" y="{H-52}" width="{W}" height="1.5" fill="{T["line"]}"/>')
-    b.append(f'<circle class="hot" cx="34" cy="{H-26}" r="4" fill="{T["hot"]}"/>')
-    b.append(D.text('IN PROGRESS · SEPTEMBER 2026 · PRIVATE REPOS UNTIL THE FIRST PAYING CLIENT', 50, H - 22, 11, 'mono700', T['akatext'], ls=2))
-    b.append(D.text('3 BUILDS · 400+ TESTS', W - 24, H - 22, 11, 'mono600', T['muted'], ls=2, anchor='end'))
-    b.append(frame(W, H, T, 1, 2))
-    alt = ('In the lab, September 2026, private repos: Footfall, a visitor counter for shops and cafes on existing Hikvision and Dahua '
-           'cameras with OpenCV DNN and a live dashboard; FaceTabel, consent-only face check-in for staff with YuNet and SFace on OpenCV 5, '
-           '0 false matches in 300 LFW pairs; Spread Scanner, spot spread and funding arbitrage across seven crypto exchanges, sold as a Telegram channel.')
-    write('lab', T, D.svg(W, H, '\n'.join(b), alt, style))
-
-AUTO = [
-    ('BROWSER & HTTP', 'ブラウザ',
-     'Playwright and Camoufox where a page needs a real browser, curl_cffi and aiohttp where it does not. Async pipelines with retries, proxy pools and per-account profiles, a React + Flask dashboard to watch them run.',
-     'PLAYWRIGHT · CURL_CFFI · AIOHTTP'),
-    ('MAIL & AUTH FLOWS', 'メール',
-     'IMAP polling for verification links and OTP codes, OAuth 2.0 and XOAUTH2 chains, session cookies and 2FA steps scripted end to end. Results land in SQLite or CSV, errors in a journal, never in a screenshot.',
-     'IMAP · OAUTH 2.0 · SQLITE · CSV'),
-    ('BOTS & SCHEDULERS', 'ボット',
-     'Telegram as the control panel: aiogram bots with a publishing queue and scheduler (igtg, 251 tests), weekly report jobs (SMM Radar), lead collection from OpenStreetMap (227 leads). GitHub Actions and Azure Functions for the rest.',
-     'AIOGRAM · CRON · GITHUB ACTIONS'),
-]
-
-def auto_panel(T):
-    W, H = 900, 300; D = Doc(); dark = T['name'] == 'dark'; CW = W / 3
-    style = ('@keyframes flow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-36px}}.flow{animation:flow 1.2s linear infinite}'
-             '@keyframes hot{0%,100%{opacity:1}50%{opacity:.35}}.hot{animation:hot 2.4s ease-in-out infinite}')
-    b = ['<defs>' + ''.join(f'<clipPath id="a{i}"><rect x="{i*CW}" y="0" width="{CW}" height="{H-52}"/></clipPath>' for i in range(3)) + '</defs>',
-         f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
-         D.text('自動化', W - 20, H - 66, 120, 'sans900', T['wine'], anchor='end', opacity=T['wine_op'] * .8)]
-    for i, (title, kana, body, tech) in enumerate(AUTO):
-        x = i * CW
-        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H-52}" stroke="{T["line"]}" stroke-width="1.5"/>')
-        b.append(f'<g clip-path="url(#a{i})">' + dots(halftone_x(x + CW - 110, x + CW, 0, H - 52, 6, 1.1), T['tone'], .18 if dark else .1) + '</g>')
-        b.append(tab(x, 0, 46, 28, AKA))
-        b.append(D.text(f'0{i+1}', x + 23, 19, 11, 'mono700', PAPER, ls=2, anchor='middle'))
-        b.append(D.text(kana, x + CW - 22, 20, 12, 'sans700', T['muted'], anchor='end'))
-        b.append(D.text(title, x + 24, 66, 15, 'sans900', T['text'], ls=2))
-        inner = CW - 48
-        lines = D.wrap(body, 12.5, 'sans400', inner)
-        assert len(lines) <= 7, (title, len(lines), lines)
-        assert D.measure(tech, 10.5, 'mono500', 1.2) <= inner, tech
-        y = 94
-        for ln in lines:
-            b.append(D.text(ln, x + 24, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 18
-        b.append(f'<rect x="{x+24}" y="{H-94}" width="28" height="2.5" fill="{AKA}"/>')
-        b.append(D.text(tech, x + 24, H - 72, 10.5, 'mono500', T['muted'], ls=1.2))
-    # pipeline strip: source -> worker -> store -> telegram
-    b.append(f'<rect x="0" y="{H-52}" width="{W}" height="1.5" fill="{T["line"]}"/>')
-    steps = ['SOURCE', 'ASYNC WORKERS', 'RETRY · PROXY · OTP', 'SQLITE / CSV', 'TELEGRAM ALERT']
-    xs = [30, 190, 380, 600, 760]
-    for j, (st, sx) in enumerate(zip(steps, xs)):
-        b.append(f'<circle{" class=\"hot\"" if j == len(steps)-1 else ""} cx="{sx}" cy="{H-26}" r="4" fill="{T["hot"] if j == len(steps)-1 else AKA}"/>')
-        b.append(D.text(st, sx + 12, H - 22, 11, 'mono700', T['akatext'] if j == len(steps)-1 else T['text'], ls=2))
-        if j < len(steps) - 1:
-            tw = D.measure(st, 11, 'mono700', 2)
-            b.append(f'<line class="flow" x1="{sx+22+tw}" y1="{H-26}" x2="{xs[j+1]-12}" y2="{H-26}" stroke="{AKA}" stroke-width="1.5" stroke-dasharray="6 6"/>')
-    b.append(frame(W, H, T, 1, 2))
-    alt = ('Automation. Browser and HTTP: Playwright and Camoufox where a page needs a real browser, curl_cffi and aiohttp where it does not, '
-           'async pipelines with retries, proxy pools and per-account profiles, a React and Flask dashboard. Mail and auth flows: IMAP polling '
-           'for verification links and OTP codes, OAuth 2.0 chains, session cookies and 2FA scripted end to end. Bots and schedulers: aiogram '
-           'Telegram bots with a publishing queue (igtg, 251 tests), weekly report jobs, lead collection from OpenStreetMap, GitHub Actions and Azure Functions.')
-    write('automation', T, D.svg(W, H, '\n'.join(b), alt, style))
-
-OPS = [
-    ('TICKET MANAGER', '券', 'OPS DESK · PRIVATE REPO',
-     'Support case desk for a fleet of accounts: CSV import, OAuth login chain, 2FA codes over IMAP, per-account proxies and sessions, batch case creation with delays and a stop button. FastAPI + WebSocket live feed, SQLite, Vite SPA. 9k lines of Python.',
-     'FASTAPI · WEBSOCKET · AIOHTTP · SQLITE · VITE'),
-    ('ACCOUNT AUTOMATION', '運用', 'CLOUDFLARE · YOUTUBE · INSTAGRAM · TIKTOK',
-     'Registration and onboarding flows for Cloudflare, YouTube, Instagram and TikTok. Camoufox where the page needs a real browser, pure requests on curl_cffi where it does not: 30 to 40 seconds per account, mail verification and OTP parsing, proxy pools, results to JSON and CSV, errors to a journal, live console dashboard.',
-     'CAMOUFOX · CURL_CFFI · IMAP · PROXIES · CSV'),
-]
-
-def ops_panel(T):
-    W, H = 900, 250; D = Doc(); dark = T['name'] == 'dark'; CW = W / 2
-    b = ['<defs>' + ''.join(f'<clipPath id="o{i}"><rect x="{i*CW}" y="0" width="{CW}" height="{H}"/></clipPath>' for i in range(2)) + '</defs>',
-         f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>']
-    for i, (title, kanji, stamp, body, tech) in enumerate(OPS):
-        x = i * CW
-        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H-18}" stroke="{T["line"]}" stroke-width="1.5"/>')
-        b.append(f'<g clip-path="url(#o{i})">' + dots(halftone_x(x + CW - 150, x + CW, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)
-                 + D.text(kanji, x + CW - 14, H - 16, 110, 'sans900', T['wine'], anchor='end', opacity=T['wine_op']) + '</g>')
-        b.append(tab(x, 0, 46, 28, AKA))
-        b.append(D.text(f'0{i+1}', x + 23, 19, 11, 'mono700', PAPER, ls=2, anchor='middle'))
-        b.append(D.text(stamp, x + CW - 22, 19, 10.5, 'mono700', T['akatext'], ls=2, anchor='end'))
-        b.append(D.text(title, x + 24, 66, 17, 'sans900', T['text'], ls=2))
-        inner = CW - 48
-        lines = D.wrap(body, 12.5, 'sans400', inner)
-        assert len(lines) <= 6, (title, len(lines))
-        assert D.measure(tech, 10.5, 'mono500', 1.2) <= inner, tech
-        y = 94
-        for ln in lines:
-            b.append(D.text(ln, x + 24, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 18
-        b.append(f'<rect x="{x+24}" y="{H-42}" width="28" height="2.5" fill="{AKA}"/>')
-        b.append(D.text(tech, x + 24, H - 20, 10.5, 'mono500', T['muted'], ls=1.2))
-    b.append(frame(W, H, T, 1, 2))
-    alt = ('Ticket Manager, private repo: support case desk for a fleet of accounts with CSV import, OAuth login chain, 2FA over IMAP, '
-           'per-account proxies, batch case creation, FastAPI and WebSocket live feed, SQLite, Vite SPA, 9k lines of Python. '
-           'Account automation for Cloudflare, YouTube, Instagram and TikTok on Camoufox and curl_cffi: mail verification, OTP parsing, '
-           'proxy pools, results to JSON and CSV, live console dashboard.')
-    write('ops', T, D.svg(W, H, '\n'.join(b), alt))
-
-CLIENTS = [
-    ('rdrightnow.com', 'LIVE', 'Multi-page site for an engineering studio: canvas hero, scroll reveals, stack ticker, contact form on Azure Functions.', 'HTML · CSS · JS · AZURE FUNCTIONS'),
-    ('InVision U', 'LIVE', 'Admissions portal: application form, MBTI and language tests in RU, KZ and EN, and a review panel for the selection committee.', 'HTML · CSS · VANILLA JS · I18N'),
-    ('SHADE', 'LIVE', 'Site for the KBTU creative club: drawing, art therapy, crafts, a links hub with a QR code.', 'REACT · VITE · TAILWIND 4 · MOTION'),
-]
-
-def client_grid(T):
-    """three front ends side by side: name, status, two lines of what it is, the stack"""
-    W, H = 900, 150; D = Doc(); dark = T['name'] == 'dark'; CW = W / 3
-    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>', dots(halftone_x(W - 150, W, 0, H, 6, 1.2), T['tone'], .2 if dark else .12)]
-    for i, (name, tag, desc, tech) in enumerate(CLIENTS):
-        x = i * CW
-        if i: b.append(f'<line x1="{x}" y1="18" x2="{x}" y2="{H - 18}" stroke="{T["line"]}" stroke-width="1.5"/>')
-        b.append(tab(x, 0, 40, 26, AKA))
-        b.append(D.text(f'0{i+1}', x + 20, 17.5, 10.5, 'mono700', PAPER, ls=1, anchor='middle'))
-        b.append(D.text(tag, x + CW - 20, 18, 10.5, 'mono700', T['akatext'], ls=2, anchor='end'))
-        b.append(D.text(name, x + 22, 56, 17, 'sans900', T['text']))
-        lines = D.wrap(desc, 12.5, 'sans400', CW - 44)
-        assert len(lines) <= 3, (name, lines)
-        y = 80
-        for ln in lines:
-            b.append(D.text(ln, x + 22, y, 12.5, 'sans400', T['text'], opacity=.84)); y += 17
-        assert D.measure(tech, 10.5, 'mono500', .8) < CW - 40, tech
-        b.append(D.text(tech, x + 22, H - 16, 10.5, 'mono500', T['muted'], ls=.8))
-    b.append(frame(W, H, T, 1, 2))
-    alt = 'Frontend. ' + ' '.join(f'{n}: {d} {t.title()}. ' for n, _, d, t in CLIENTS)
-    write('clients', T, D.svg(W, H, '\n'.join(b), alt))
+def workshop(T):
+    W = 900; D = Doc(); dark = T['name'] == 'dark'
+    top, TH, RG = 22, 122, 14; GX0, GX1 = 214, 880; TG = 12; TW = (GX1 - GX0 - 2 * TG) / 3
+    H = top + 2 * TH + RG + 50
+    tile_bg = INK if dark else '#ffffff'
+    style = ('@keyframes rv{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}'
+             + ''.join(f'.t{i}{{animation:rv .5s cubic-bezier(.16,1,.3,1) {0.15 + i*0.06:.2f}s both}}' for i in range(8))
+             + '@keyframes gl{0%{transform:translateX(0)}40%,100%{transform:translateX(900px)}}.gl{animation:gl 6s cubic-bezier(.4,0,.2,1) 2.4s infinite}'
+             + '@keyframes hot{0%,100%{opacity:1}50%{opacity:.3}}.hot{animation:hot 2.4s ease-in-out infinite}')
+    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>', dots(halftone_x(W - 160, W, 0, H, 7, 1.4), T['tone'], .2 if dark else .12)]
+    clips, k = [], 0
+    for r, (num, kanji, cat, items) in enumerate(WORKSHOP):
+        ry = top + r * (TH + RG)
+        b.append(f'<g class="t{k}">' + tab(20, ry + 4, 38, 22, AKA) + D.text(num, 39, ry + 19.5, 11, 'mono700', PAPER, ls=1, anchor='middle')
+                 + D.text(kanji, 86, ry + 25, 22, 'sans900', T['akatext'])
+                 + D.text(cat, 21, ry + 50, 11.5, 'mono700', T['text'], ls=3)
+                 + f'<rect x="20" y="{ry + 60}" width="{GX0 - 36}" height="1.5" fill="{T["line"]}"/>' + '</g>')
+        k += 1
+        for c, (title, tag, wm, line, tech) in enumerate(items):
+            x = GX0 + c * (TW + TG); y = ry; inner = TW - 28
+            clips.append(f'<rect x="{x:.1f}" y="{y}" width="{TW:.1f}" height="{TH}" rx="3"/>')
+            fs = 17
+            while D.measure(title, fs, 'sans900') > inner: fs -= .5
+            lines = D.wrap(line, 12.5, 'sans400', inner)
+            assert len(lines) <= 2, (title, lines)
+            assert D.measure(tech, 10, 'mono500', 1) <= inner and D.measure(tag, 10, 'mono700', 2) <= inner, (tag, tech)
+            g = [f'<clipPath id="k{r}{c}"><rect x="{x:.1f}" y="{y}" width="{TW:.1f}" height="{TH}" rx="3"/></clipPath>',
+                 f'<rect x="{x:.1f}" y="{y}" width="{TW:.1f}" height="{TH}" rx="3" fill="{tile_bg}" stroke="{T["line"]}" stroke-width="1.2"/>',
+                 f'<g clip-path="url(#k{r}{c})">' + D.text(wm, x + TW - 6, y + TH + 8, 78, 'sans900', T['wine'], anchor='end', opacity=T['wine_op'] * .75) + '</g>',
+                 D.text(tag, x + 14, y + 23, 10, 'mono700', T['akatext'], ls=2),
+                 D.text(title, x + 14, y + 50, fs, 'sans900', T['text'])]
+            ly = y + 72
+            for ln in lines:
+                g.append(D.text(ln, x + 14, ly, 12.5, 'sans400', T['text'], opacity=.84)); ly += 17
+            g.append(D.text(tech, x + 14, y + TH - 13, 10, 'mono500', T['muted'], ls=1))
+            b.append(f'<g class="t{k}">' + ''.join(g) + '</g>'); k += 1
+    b.append(f'<defs><clipPath id="tc">{"".join(clips)}</clipPath><linearGradient id="glg" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+             f'<stop offset=".5" stop-color="#fff" stop-opacity="{.1 if dark else .45}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>')
+    b.append(f'<g clip-path="url(#tc)"><g class="gl"><rect x="-120" y="0" width="80" height="{H}" fill="url(#glg)" transform="skewX(-20)"/></g></g>')
+    fy = H - 20
+    b.append(f'<circle class="hot" cx="{GX0 + 5}" cy="{fy - 4}" r="4" fill="{T["hot"]}"/>'
+             + D.text('IN PROGRESS · SEPTEMBER 2026', GX0 + 18, fy, 10.5, 'mono700', T['muted'], ls=2.5)
+             + D.text('工房', GX1, fy + 1, 12, 'sans700', T['akatext'], anchor='end')
+             + D.text('PRIVATE REPOS', GX1 - D.measure('工房', 12, 'sans700') - 12, fy, 10.5, 'mono700', T['muted'], ls=2.5, anchor='end'))
+    b.append(frame(W, H, T))
+    alt = 'Workshop. ' + ' '.join(f'{cat.title()}: ' + '; '.join(f'{t}, {l[0].lower() + l[1:].rstrip(".")}' for t, _, _, l, _ in items) + '.' for _, _, cat, items in WORKSHOP)
+    write('workshop', T, D.svg(W, H, '\n'.join(b), alt, style))
 
 def fe_pages():
     """the three sites as one manga page: a big panel and two stacked ones, slanted gutters, kanji tabs"""
@@ -217,13 +114,7 @@ if __name__ == '__main__':
         divider_saya(T)
         divider_draw(T)
         divider_daisho(T)
-        auto_panel(T)
-        ops_panel(T)
-        client_grid(T)
+        workshop(T)
         next_panel(T)
-        lab_panel(T)
-        chapter(T, '05', '第五話', 'AUTOMATION', 'BROWSERS  ·  MAIL AND AUTH  ·  BOTS  ·  TICKET MANAGER  ·  ACCOUNTS', 'Chapter 5: automation')
-        chapter(T, '07', '第七話', 'FRONTEND', 'RDRIGHTNOW.COM  ·  INVISION U  ·  SHADE  ·  REACT  ·  VITE  ·  AZURE', 'Chapter 7: frontend')
-        chapter(T, '06', '第六話', 'IN THE LAB', 'FOOTFALL  ·  FACETABEL  ·  SPREAD SCANNER  ·  SEPTEMBER 2026', 'Chapter 6: in the lab')
     fe_pages()
     print_panel()

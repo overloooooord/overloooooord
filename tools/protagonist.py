@@ -21,7 +21,7 @@ NOW = [('BUILDING', 'SMM Radar, Telegram analytics, private beta'),
        ('SHIPPED', 'Flavor Tree for OneIdea 2026 × Efes'),
        ('STUDYING', 'Software Engineering at KBTU, final years'),
        ('OPEN TO', 'Internships · freelance backend · hackathons'),
-       ('BASED IN', 'Almaty, Kazakhstan · UTC+5')]
+       ('PASSIVE', 'SEO · public speaking, several years each')]
 
 def protagonist(T):
     W, H = 900, 452; D = Doc(); dark = T['name'] == 'dark'; rnd = random.Random(5)
@@ -201,4 +201,3 @@ if __name__ == '__main__':
     for T in (DARK, LIGHT):
         protagonist(T)
         arsenal(T)
-        chapter(T, '02', '第二話', 'ARSENAL', 'LANGUAGES  ·  BACKEND  ·  FRONTEND  ·  AUTOMATION  ·  INFRA', 'Chapter 2: arsenal')
