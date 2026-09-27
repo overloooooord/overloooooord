@@ -75,7 +75,7 @@ def halftone_ring(cx, cy, r0, spread, x0, x1, y0, y1, step, rmax, avoid=None):
 # ------------------------------------------------------------------ katana illustrations live in katana.py
 from katana import Katana, GOLD
 
-LANGS = 'Python · TypeScript · JavaScript · Java · SQL'
+LANGS = 'Python · TypeScript · JavaScript · C++ · Java · SQL'
 STACK = 'Django · DRF · FastAPI · Angular · React · aiogram · Playwright'
 
 def taper_slash(x1, y1, x2, y2, cls, widths=((1.6, 0.0, 1.0), (3.4, 0.14, 0.86), (5.6, 0.3, 0.7))):

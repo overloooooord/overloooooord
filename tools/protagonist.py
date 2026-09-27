@@ -28,8 +28,9 @@ def protagonist(T):
     # portrait panel, slanted right edge like the Flavor Tree pages
     x0, y0, x1t, x1b, yb = 10, 10, 392, 368, H - 10
     d = f'M{x0} {y0} H{x1t} L{x1b} {yb} H{x0} Z'
-    fw = 404; fh = fw * 683 / 640; fx = -2; fy = yb - fh + 2          # the print, shirt resting on the bottom edge
-    hx, hy = fx + 290 * fw / 640, fy + 250 * fw / 640                   # centre of his head inside the panel
+    pw, ph = Image.open(HERE / 'data' / 'face-print.jpg').size
+    fw = 404; fh = fw * ph / pw; fx = -2; fy = yb - fh + 2              # the print, shirt resting on the bottom edge
+    hx, hy = fx + .453 * fw, fy + .366 * fh                             # centre of his head inside the panel
     style = ('@keyframes rv{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}'
              + ''.join(f'.rv{i}{{animation:rv .7s cubic-bezier(.16,1,.3,1) {0.5 + i*0.08:.2f}s both}}' for i in range(10))
              # the print is pulled in from the left like a sheet coming off the press
@@ -106,7 +107,7 @@ def protagonist(T):
 # (label, simple-icons slug or a drawn glyph, main stack)
 ARSENAL = [
     ('01', '刀', 'LANGUAGES', [('PYTHON', 'python', 1), ('TYPESCRIPT', 'typescript', 0), ('JAVASCRIPT', 'javascript', 0),
-                               ('JAVA', 'openjdk', 0), ('SQL', ':db', 0)]),
+                               ('C++', 'cplusplus', 0), ('JAVA', 'openjdk', 0), ('SQL', ':db', 0)]),
     ('02', '城', 'BACKEND', [('DJANGO', 'django', 1), ('DRF', ':drf', 1), ('FASTAPI', 'fastapi', 0),
                              ('POSTGRESQL', 'postgresql', 1), ('REDIS', 'redis', 0), ('SQLITE', 'sqlite', 0)]),
     ('03', '弓', 'FRONTEND', [('ANGULAR', 'angular', 0), ('REACT', 'react', 0), ('NEXT.JS', 'nextdotjs', 0),
@@ -193,7 +194,7 @@ def arsenal(T):
              + D.text('武器庫', GX1, fy + 1, 12, 'sans700', T['akatext'], anchor='end')
              + D.text(cnt, GX1 - D.measure('武器庫', 12, 'sans700') - 12, fy, 10.5, 'mono700', T['muted'], ls=2.5, anchor='end'))
     b.append(frame(W, H, T))
-    alt = 'Arsenal. ' + ' '.join(f'{cat.title()}: ' + ', '.join(l.title() if l not in ('SQL', 'DRF') else l for l, _, _ in items) + '.' for _, _, cat, items in ARSENAL)
+    alt = 'Arsenal. ' + ' '.join(f'{cat.title()}: ' + ', '.join(l.title() if l not in ('SQL', 'DRF', 'C++') else l for l, _, _ in items) + '.' for _, _, cat, items in ARSENAL)
     write('arsenal', T, D.svg(W, H, '\n'.join(b), alt, style))
 
 if __name__ == '__main__':
