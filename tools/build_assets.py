@@ -2,8 +2,8 @@
 """Akai (赤) Anime profile: builds every SVG in ../assets, dark and paper-white light twins.
 
 All text is typeset to vector paths by typeset.py (HarfBuzz + Noto Sans CJK JP / Source Code Pro),
-so nothing depends on the viewer's fonts. Facts come from variants/FACTS.md; the contribution
-calendar is the snapshot in data/ (refresh it with: python3 build_assets.py --refresh).
+so nothing depends on the viewer's fonts. Facts come from variants/FACTS.md. The contribution log is
+not built here: GitHub Actions draws it daily with contrib_turtle.py (glyphs baked by log_kit.py).
 Flavor Tree panels embed the shared screenshots from the repo root assets/shots/ as JPEG data.
 Run: python3 build_assets.py
 """
@@ -15,8 +15,6 @@ from typeset import Doc, f2
 HERE = Path(__file__).resolve().parent
 OUT = HERE.parent / 'assets'
 SHOTS = HERE.parent / 'assets' / 'shots'
-DATA = HERE / 'data' / 'contributions-2026-09-26.json'
-SNAP = 'SNAPSHOT · 2026.09'
 
 # dark neutrals are GitHub's own (canvas #0d1117, overlay #161b22, border #30363d) so the panels sit in the page, not on it
 INK = '#0d1117'; INK2 = '#161b22'; BLOOD = '#30363d'; WINE = '#7a0a1a'
@@ -402,68 +400,6 @@ def quest_smm(T):
            'Django 6, Playwright, XlsxWriter, aiogram, Docker and Caddy.')
     write('quest-smm', T, D.svg(W, H + QGAP, '\n'.join(b), alt, style))
 
-# ------------------------------------------------------------------ contribution log: 2026 heatmap + streak combo
-def training_log(T):
-    W, H = 900, 236; D = Doc(); dark = T['name'] == 'dark'
-    data = json.loads(DATA.read_text())['days']
-    start = dt.date(2025, 12, 28); end = dt.date(2026, 9, 26)   # Sunday-based weeks, 2026 only
-    def lvl(c): return 0 if c == 0 else 1 if c == 1 else 2 if c <= 3 else 3 if c <= 9 else 4
-    X0, Y0, P, S = 28, 74, 15, 12
-    style = ('@keyframes run{0%{transform:translateX(0)}100%{transform:translateX(118px)}}.run{animation:run 2.6s ease-in-out infinite alternate}'
-             '@keyframes hot{0%,100%{opacity:1}50%{opacity:.55}}.hot{animation:hot 2.4s ease-in-out infinite}')
-    b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
-         dots(halftone_x(640, 900, 0, H, 7, 1.5), T['tone'], .24 if dark else .13)]
-    b.append(D.text('TRAINING LOG 2026', X0, 34, 11.5, 'mono700', T['akatext'], ls=4))
-    b.append(D.text('修行', X0 + D.measure('TRAINING LOG 2026', 11.5, 'mono700', 4) + 10, 35, 12, 'sans700', T['muted']))
-    cells = []; months = {}; streak = []; apr5 = None
-    d = start
-    while d <= end:
-        w = (d - start).days // 7; wd = (d.weekday() + 1) % 7
-        x = X0 + w * P; y = Y0 + wd * P
-        if d.year == 2026:
-            c = data.get(d.isoformat(), 0)
-            cls = ' class="hot"' if lvl(c) == 4 else ''
-            cells.append(f'<rect{cls} x="{x}" y="{y}" width="{S}" height="{S}" fill="{T["cell"][lvl(c)]}"/>')
-            if d.day == 1: months.setdefault(d.month, x)
-            if dt.date(2026, 7, 22) <= d <= dt.date(2026, 9, 19): streak.append(x)
-            if d == dt.date(2026, 4, 5): apr5 = (x, y)
-        d += dt.timedelta(days=1)
-    b.append(''.join(cells))
-    for m, x in months.items():
-        b.append(D.text(dt.date(2026, m, 1).strftime('%b').upper(), x, Y0 - 10, 11, 'mono500', T['muted'], ls=1))
-    # streak bracket
-    sx0, sx1 = min(streak), max(streak) + S
-    yb = Y0 + 7 * P + 6
-    b.append(f'<path d="M{sx0} {yb-5} V{yb} H{sx1} V{yb-5}" fill="none" stroke="{T["hot"]}" stroke-width="2"/>')
-    b.append(f'<rect class="run" x="{sx0}" y="{yb-1.5}" width="14" height="3" fill="{T["text"]}"/>')
-    b.append(D.text('60 DAY STREAK · JUL 22 TO SEP 19', sx1, yb + 20, 11, 'mono700', T['akatext'], ls=1.2, anchor='end'))
-    # decentrathon marker on the April spike
-    ax, ay = apr5
-    b.append(f'<path d="M{ax+S/2} {Y0-24} V{ay-3}" stroke="{T["hot"]}" stroke-width="1.5" stroke-dasharray="2 3"/>')
-    b.append(f'<circle cx="{ax+S/2}" cy="{ay+S/2}" r="10" fill="none" stroke="{T["hot"]}" stroke-width="1.5"/>')
-    b.append(D.text('DECENTRATHON 5.0', ax + S / 2 - 6, Y0 - 30, 11, 'mono700', T['akatext'], ls=1.2))
-    # legend
-    lx = X0; ly = H - 22
-    b.append(D.text('LESS', lx, ly + 9, 11, 'mono500', T['muted'], ls=1))
-    for i in range(5):
-        b.append(f'<rect x="{lx + 40 + i*15}" y="{ly}" width="{S}" height="{S}" fill="{T["cell"][i]}"/>')
-    b.append(D.text('MORE', lx + 40 + 5 * 15 + 4, ly + 9, 11, 'mono500', T['muted'], ls=1))
-    # combo counter
-    cx = 648
-    b.append(f'<line x1="{cx-14}" y1="22" x2="{cx-14}" y2="{H-22}" stroke="{T["line"]}" stroke-width="1.5"/>')
-    b.append(D.text('ゴゴゴ', 896, 70, 34, 'sans900', T['wine'], ls=2, anchor='end', opacity=T['wine_op'] * 1.2, skew=-14))
-    b.append(D.text('60', cx + 7, 126, 92, 'sans900', AKA, ls=-4, skew=-10))
-    b.append(D.text('60', cx, 120, 92, 'sans900', T['text'], ls=-4, skew=-10))
-    b.append(D.text('DAY COMBO', cx + 2, 148, 14, 'mono700', T['akatext'], ls=4))
-    b.append(D.text('連続', cx + 2 + D.measure('DAY COMBO', 14, 'mono700', 4) + 10, 149, 15, 'sans900', T['text']))
-    b.append(D.text('484 contributions in 2026', cx + 2, 176, 11.5, 'mono500', T['text'], opacity=.9))
-    b.append(D.text('18 public repositories', cx + 2, 194, 11.5, 'mono500', T['text'], opacity=.9))
-    b.append(D.text(SNAP, cx + 2, H - 22, 11, 'mono500', T['dim'], ls=1.5))
-    b.append(frame(W, H, T, 1, 2))
-    alt = ('Contribution log, snapshot September 2026: heatmap of 2026 with 484 contributions, a spike in April during '
-           'Decentrathon 5.0 and a 60 day streak from July 22 to September 19. 18 public repositories.')
-    write('contrib-log', T, D.svg(W, H, '\n'.join(b), alt, style))
-
 # ------------------------------------------------------------------ next episode panel, sits next to the katana GIF
 def next_panel(T):
     # sits beside the Kuniyoshi print panel; both are 448 x 300
@@ -572,19 +508,7 @@ def button(T, name, icon, label, handle, alt, pos):
     write(f'btn-{name}', T, D.svg(W, H, '\n'.join(b), alt))
 
 
-def refresh():
-    q = ('query{user(login:"overloooooord"){repositories(privacy:PUBLIC,ownerAffiliations:OWNER){totalCount} '
-         'contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}')
-    r = json.loads(subprocess.run([str(Path.home() / '.local/bin/gh'), 'api', 'graphql', '-f', f'query={q}'], capture_output=True, check=True).stdout)
-    u = r['data']['user']; cal = u['contributionsCollection']['contributionCalendar']
-    days = {x['date']: x['contributionCount'] for w in cal['weeks'] for x in w['contributionDays']}
-    DATA.write_text(json.dumps({'source': 'GitHub GraphQL contributionCalendar', 'total_last_12_months': cal['totalContributions'],
-                                'public_repos': u['repositories']['totalCount'], 'days': days}, separators=(',', ':')))
-    print('refreshed', DATA)
-
-
 if __name__ == '__main__':
-    if '--refresh' in sys.argv: refresh()
     only = [a for a in sys.argv[1:] if not a.startswith('--')]
     def want(n): return not only or n in only
     for T in (DARK, LIGHT):
@@ -595,13 +519,12 @@ if __name__ == '__main__':
             chapter(T, '01', '第一話', 'ARSENAL', 'LANGUAGES  ·  BACKEND  ·  FRONTEND  ·  AUTOMATION  ·  INFRA', 'Chapter 1: arsenal')
             chapter(T, '02', '第二話', 'QUEST LOG', 'FLAVOR TREE  ·  SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 2: quest log')
             chapter(T, '03', '第三話', 'WORKSHOP', 'AUTOMATION  ·  IN THE LAB  ·  FRONTEND', 'Chapter 3: workshop')
-            chapter(T, '04', '第四話', 'CONTRIBUTION LOG', SNAP, 'Chapter 4: contribution log')
+            chapter(T, '04', '第四話', 'CONTRIBUTION LOG', 'LIVE  ·  UPDATED DAILY', 'Chapter 4: contribution log')
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):
             quest_smm(T)
             for (key, num, title, stamp, kanji, body, tech, alt), side, lean in zip(QUESTS, ('left', 'right'), (1, 1)):
                 quest_card(T, key, num, title, stamp, kanji, body, tech, alt, side, lean)
-        if want('log'): training_log(T)
         if want('next'): next_panel(T)
         if want('footer'): footer(T)
         if want('buttons'):

@@ -6,6 +6,7 @@ repo); only the print and its alpha mask live in data/. Logos are Simple Icons (
 Run: python3 protagonist.py
 """
 import base64, math, random, re
+from PIL import Image
 from build_assets import *
 
 ICON_DIR = HERE / 'data' / 'icons'
@@ -21,87 +22,57 @@ NOW = [('BUILDING', 'SMM Radar, Telegram analytics, private beta'),
        ('SHIPPED', 'Flavor Tree for OneIdea 2026 × Efes'),
        ('STUDYING', 'Software Engineering at KBTU, final years'),
        ('OPEN TO', 'Internships · freelance backend · hackathons'),
-       ('PASSIVE', 'SEO · public speaking, several years each')]
+       ('ALSO', 'SEO · public speaking, several years each')]
+BACKDROP = 'sun'   # behind the photo: 'sun' (the hero's red sun on dark), 'dark' or 'red'; the photo's look is set in variants/face/print.py
 
-def protagonist(T):
-    W, H = 900, 452; D = Doc(); dark = T['name'] == 'dark'; rnd = random.Random(5)
-    # portrait panel, slanted right edge like the Flavor Tree pages
-    x0, y0, x1t, x1b, yb = 10, 10, 392, 368, H - 10
-    d = f'M{x0} {y0} H{x1t} L{x1b} {yb} H{x0} Z'
-    pw, ph = Image.open(HERE / 'data' / 'face-print.jpg').size
-    fw = 404; fh = fw * ph / pw; fx = -2; fy = yb - fh + 2              # the print, shirt resting on the bottom edge
-    hx, hy = fx + .453 * fw, fy + .366 * fh                             # centre of his head inside the panel
-    style = ('@keyframes rv{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}'
-             + ''.join(f'.rv{i}{{animation:rv .7s cubic-bezier(.16,1,.3,1) {0.5 + i*0.08:.2f}s both}}' for i in range(10))
-             # the print is pulled in from the left like a sheet coming off the press
-             + '@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}.wipe{animation:wipe .9s cubic-bezier(.7,0,.2,1) .1s both}'
-             + '@keyframes scan{0%{transform:translateY(-20px);opacity:0}6%{opacity:1}60%{transform:translateY(460px);opacity:1}61%,100%{transform:translateY(460px);opacity:0}}.scan{animation:scan 6s linear 1.2s infinite}'
-             + ''.join(f'.l{i}{{animation:sh {2.6+(i%4)*.8:.1f}s ease-in-out {i*.31:.2f}s infinite}}' for i in range(8))
-             + '@keyframes sh{0%,100%{opacity:.25}50%{opacity:.8}}'
-             # speech balloon pops out of the gutter, the stamp slams down last
-             + '@keyframes pop{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.08)}100%{transform:scale(1)}}'
-             + '.pop{transform-box:fill-box;transform-origin:0% 100%;animation:pop .55s cubic-bezier(.2,.9,.3,1.4) 1.1s both}'
-             + '@keyframes slam{0%{opacity:0;transform:scale(2.2) rotate(-18deg)}60%{opacity:1;transform:scale(.92) rotate(-8deg)}100%{transform:scale(1) rotate(-8deg)}}'
-             + '.slam{transform-box:fill-box;transform-origin:50% 50%;animation:slam .45s cubic-bezier(.3,0,.2,1) 1.7s both}'
+def protagonist(T, backdrop=BACKDROP, fig=None, name='protagonist'):
+    """a quiet portrait: the photo in a plain frame, the title and the NOW list; the hero keeps all the noise"""
+    W, H = 900, 452; D = Doc(); dark = T['name'] == 'dark'
+    fig = fig or HERE / 'data' / 'face-print.jpg'
+    x0, y0, x1, y1 = 10, 10, 392, H - 10                                 # photo box
+    pw, ph = Image.open(fig).size
+    fw = 404; fh = fw * ph / pw; fx = x0 - 12; fy = y1 - fh + 2         # shoulders resting on the bottom edge
+    hx, hy = fx + .453 * fw, fy + .366 * fh                             # centre of the head
+    style = ('@keyframes rv{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}'
+             + ''.join(f'.rv{i}{{animation:rv .7s cubic-bezier(.16,1,.3,1) {0.35 + i*0.08:.2f}s both}}' for i in range(9))
+             + '@keyframes ph{from{opacity:0}to{opacity:1}}.ph{animation:ph 1.1s ease-out .05s both}'
              + '@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}.live{animation:blink 1.1s steps(1) infinite}')
-    fig = b64(HERE / 'data' / 'face-print.jpg', 'image/jpeg'); alpha = b64(HERE / 'data' / 'face-alpha.png', 'image/png')
-    b = [f'<defs><clipPath id="pp"><path d="{d}"/></clipPath>'
-         f'<mask id="fm" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><image href="{alpha}" x="{fx}" y="{fy:.1f}" width="{fw}" height="{fh:.1f}"/></mask>'
-         f'<linearGradient id="sc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{PAPER}" stop-opacity="0"/><stop offset=".85" stop-color="{PAPER}" stop-opacity=".55"/><stop offset="1" stop-color="{PAPER}"/></linearGradient>'
+    b = [f'<defs><clipPath id="pb"><rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}"/></clipPath>'
+         f'<mask id="fm" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><image href="{b64(HERE / "data" / "face-alpha.png", "image/png")}" x="{fx}" y="{fy:.1f}" width="{fw}" height="{fh:.1f}"/></mask>'
+         f'<linearGradient id="bd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f252d"/><stop offset="1" stop-color="{INK}"/></linearGradient>'
          f'<linearGradient id="rule" x1="0" x2="1"><stop offset="0" stop-color="{AKA}"/><stop offset="1" stop-color="{AKA}" stop-opacity="0"/></linearGradient></defs>',
          f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
-         dots(halftone_x(W - 190, W, 0, H, 7, 1.5), T['tone'], .22 if dark else .14)]
-    # red panel: halftone ring and focus lines around the head, then the print on top
-    g = [f'<rect x="0" y="0" width="{x1t}" height="{H}" fill="{AKA}"/>',
-         dots(halftone_ring(hx, hy, 150, 210, 0, x1t, 0, H, 7, 2.4), INK, .32)]
-    ls = []
-    for i in range(54):
-        a = math.radians(rnd.uniform(0, 360)); r1 = rnd.uniform(165, 205); r2 = 520
-        ls.append(f'<line class="l{i%8}" x1="{hx+r1*math.cos(a):.0f}" y1="{hy+r1*math.sin(a):.0f}" x2="{hx+r2*math.cos(a):.0f}" y2="{hy+r2*math.sin(a):.0f}" stroke-width="{rnd.uniform(.8,2.8):.1f}"/>')
-    g.append(f'<g stroke="{PAPER}" stroke-linecap="round">{"".join(ls)}</g>')
-    g.append(f'<g class="wipe"><image href="{fig}" x="{fx}" y="{fy:.1f}" width="{fw}" height="{fh:.1f}" mask="url(#fm)" preserveAspectRatio="none"/></g>')
-    g.append(f'<rect class="scan" x="0" y="0" width="{x1t}" height="22" fill="url(#sc)" fill-opacity=".5" opacity="0"/>')   # hidden at rest
-    b.append(f'<g clip-path="url(#pp)">{"".join(g)}</g>')
-    b.append(ink_frame(d))
-    t, tw = kanji_tab(D, 26, 22, '主人公', size=18)
-    b.append(t)
-    b.append(caption_box(D, 22, yb - 44, ['CHARACTER 01 · KLIM'], 11.5, 'mono700'))
-    # the balloon: his old bio, shouted from the gutter
-    bx, by, brx, bry = 548, 60, 122, 34
-    line = 'pythoooooooooon!'
-    fs = 19
-    while D.measure(line, fs, 'sans900') > 2 * brx - 34: fs -= .5
-    balloon = (f'<path d="M{bx - brx*.62:.1f} {by + bry*.72:.1f} L{x1t - 8} {hy - 34:.1f} L{bx - brx*.36:.1f} {by + bry*.9:.1f} Z" fill="{PAPER}" stroke="{INK}" stroke-width="2.5" stroke-linejoin="round"/>'
-               f'<ellipse cx="{bx}" cy="{by}" rx="{brx}" ry="{bry}" fill="{PAPER}" stroke="{INK}" stroke-width="2.5"/>'
-               f'<path d="M{bx - brx*.62 + 3:.1f} {by + bry*.72 - 3:.1f} L{bx - brx*.36 - 2:.1f} {by + bry*.9 - 4:.1f}" stroke="{PAPER}" stroke-width="5"/>'
-               + D.text(line, bx, by + fs * .36, fs, 'sans900', INK, anchor='middle'))
-    b.append(f'<g class="pop">{balloon}</g>')
-    # the stamp
-    sx, sy, ss = 836, 58, 52
-    b.append(f'<g class="slam"><g transform="rotate(-8 {sx} {sy})"><rect x="{sx - ss/2}" y="{sy - ss/2}" width="{ss}" height="{ss}" rx="5" fill="none" stroke="{AKA}" stroke-width="3.5"/>'
-             f'<rect x="{sx - ss/2 + 5}" y="{sy - ss/2 + 5}" width="{ss - 10}" height="{ss - 10}" rx="3" fill="{AKA}"/>'
-             + D.text('侍', sx, sy + 13, 34, 'sans900', PAPER, anchor='middle') + '</g></g>')
-    # right column
+         dots(halftone_x(W - 150, W, 0, H, 7, 1.3), T['tone'], .16 if dark else .1)]
+    g = [f'<rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}" fill="{AKA if backdrop == "red" else "url(#bd)"}"/>']
+    if backdrop == 'sun':
+        g.append(f'<circle cx="{hx:.1f}" cy="{hy - 6:.1f}" r="148" fill="{AKA}"/>')
+    g.append(f'<g class="ph"><image href="{b64(fig, "image/jpeg")}" x="{fx}" y="{fy:.1f}" width="{fw}" height="{fh:.1f}" mask="url(#fm)" preserveAspectRatio="none"/></g>')
+    b.append(f'<g clip-path="url(#pb)">{"".join(g)}</g>')
+    b.append(f'<rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}" fill="none" stroke="{T["line"] if dark else INK}" stroke-width="1.5" stroke-opacity="{1 if dark else .5}"/>')
+    # a small straight seal, the way a print is signed
+    sx, sy, ss = 858, 44, 34
+    b.append(f'<g class="rv8"><rect x="{sx - ss/2}" y="{sy - ss/2}" width="{ss}" height="{ss}" rx="3" fill="{AKA}"/>'
+             + D.text('侍', sx, sy + 8.5, 23, 'sans900', PAPER, anchor='middle') + '</g>')
     X = 440; VX = 548
     kw = D.measure('第零話', 14, 'sans900', 1)
-    b.append('<g class="rv0">' + D.text('第零話', X, 135, 14, 'sans900', T['akatext'], ls=1)
-             + D.text('PROLOGUE · PROTAGONIST', X + kw + 14, 134, 11.5, 'mono700', T['akatext'], ls=3.2) + '</g>')
-    b.append('<g class="rv1">' + D.text('Backend developer.', X - 1, 178, 32, 'sans900', T['text']) + '</g>')
-    b.append('<g class="rv2">' + D.text('Python first.', X - 1, 216, 32, 'sans900', T['akatext']) + '</g>')
-    b.append(f'<g class="rv3"><rect x="{X}" y="236" width="420" height="2" fill="url(#rule)"/></g>')
-    b.append(f'<g class="rv4">' + D.text('NOW', X, 266, 12, 'mono700', T['text'], ls=4) + D.text('今', X + 48, 267, 14, 'sans900', T['akatext'])
-             + f'<circle class="live" cx="{X + 76}" cy="262" r="4" fill="{T["hot"]}"/>' + '</g>')
-    y = 298
+    b.append('<g class="rv0">' + D.text('第零話', X, 64, 14, 'sans900', T['akatext'], ls=1)
+             + D.text('PROLOGUE', X + kw + 14, 63, 11.5, 'mono700', T['akatext'], ls=3.2) + '</g>')
+    b.append('<g class="rv1">' + D.text('Backend developer.', X - 1, 122, 34, 'sans900', T['text']) + '</g>')
+    b.append('<g class="rv2">' + D.text('Python first.', X - 1, 162, 34, 'sans900', T['akatext']) + '</g>')
+    b.append(f'<g class="rv3"><rect x="{X}" y="190" width="420" height="2" fill="url(#rule)"/></g>')
+    b.append('<g class="rv3">' + D.text('NOW', X, 232, 12, 'mono700', T['text'], ls=4) + D.text('今', X + 48, 233, 14, 'sans900', T['akatext'])
+             + f'<circle class="live" cx="{X + 76}" cy="228" r="4" fill="{T["hot"]}"/>' + '</g>')
+    y = 268
     for i, (lab, val) in enumerate(NOW):
         assert D.measure(val, 14, 'sans500') < W - 18 - VX, (val, D.measure(val, 14, 'sans500'))
-        b.append(f'<g class="rv{5+i}">' + D.text(lab, X, y, 10.5, 'mono700', T['akatext'], ls=2.5)
+        b.append(f'<g class="rv{4 + min(i, 3)}">' + D.text(lab, X, y, 10.5, 'mono700', T['akatext'], ls=2.5)
                  + D.text(val, VX, y + .5, 14, 'sans500', T['text'], opacity=.94)
-                 + f'<rect x="{X}" y="{y + 12}" width="{W - 18 - X}" height="1" fill="{T["line"]}"/>' + '</g>')
-        y += 31
+                 + f'<rect x="{X}" y="{y + 13}" width="{W - 18 - X}" height="1" fill="{T["line"]}"/>' + '</g>')
+        y += 34
     b.append(frame(W, H, T))
-    alt = ('Prologue, the protagonist: Klim Kassymkhan printed in ink on a red manga panel, shouting pythoooooooooon. '
-           'Backend developer, Python first. Now: ' + '; '.join(f'{l.lower()} {v}' for l, v in NOW) + '.')
-    write('protagonist', T, D.svg(W, H, '\n'.join(b), alt, style))
+    alt = ('Prologue: a portrait of Klim Kassymkhan. Backend developer, Python first. Now: '
+           + '; '.join(f'{l.lower()} {v}' for l, v in NOW) + '.')
+    write(name, T, D.svg(W, H, '\n'.join(b), alt, style))
 
 # ------------------------------------------------------------------ arsenal
 # (label, simple-icons slug or a drawn glyph, main stack)

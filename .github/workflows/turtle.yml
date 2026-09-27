@@ -1,4 +1,4 @@
-name: Generate contribution turtle
+name: Draw the contribution log
 
 on:
   schedule:
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Draw the turtle over the contribution calendar
+      - name: Draw the contribution log with the turtle
         run: python3 tools/contrib_turtle.py --user "${{ github.repository_owner }}" --out dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

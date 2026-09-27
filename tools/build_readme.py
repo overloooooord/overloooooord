@@ -3,7 +3,7 @@
 from pathlib import Path
 import hashlib, re
 OUT = Path(__file__).resolve().parent.parent / 'README.md'
-TURTLE = 'https://raw.githubusercontent.com/overloooooord/overloooooord/output/turtle'
+LOG = 'https://raw.githubusercontent.com/overloooooord/overloooooord/output/log'   # drawn daily by tools/contrib_turtle.py
 
 def alt_of(name):
     return re.search(r'aria-label="([^"]+)"', (OUT.parent / 'assets' / f'{name}.svg').read_text()).group(1)
@@ -75,11 +75,7 @@ pic('divider-daisho'),
 '',
 pic('chapter-04'),
 '',
-pic('contrib-log'),
-'',
-'<p align="center">',
-f'<picture><source media="(prefers-color-scheme: dark)" srcset="{TURTLE}-dark.svg"><source media="(prefers-color-scheme: light)" srcset="{TURTLE}.svg"><img src="{TURTLE}-dark.svg" width="100%" alt="A ninja turtle with a red headband walks the contribution calendar and cuts every day with commits"></picture>',
-'</p>',
+f'<picture><source media="(prefers-color-scheme: dark)" srcset="{LOG}-dark.svg"><source media="(prefers-color-scheme: light)" srcset="{LOG}.svg"><img src="{LOG}-dark.svg" width="100%" alt="Contribution log, updated daily: contributions in the last year, the longest streak, public repositories, and a ninja turtle that walks the calendar and cuts every day with commits"></picture>',
 '',
 '<br>',
 '',

@@ -5,7 +5,7 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/ribbon-status.svg?v=688a6682"><source media="(prefers-color-scheme: light)" srcset="assets/ribbon-status-light.svg?v=bffa312c"><img src="assets/ribbon-status.svg?v=688a6682" width="100%" alt="Status: open to internships, freelance backend work, hackathon teams, almaty or remote, fastest reply on telegram @dreamdrainer, django · fastapi · angular · playwright"></picture>
 </p>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/protagonist.svg?v=d27319d6"><source media="(prefers-color-scheme: light)" srcset="assets/protagonist-light.svg?v=9527d9b5"><img src="assets/protagonist.svg?v=d27319d6" width="100%" alt="Prologue, the protagonist: Klim Kassymkhan printed in ink on a red manga panel, shouting pythoooooooooon. Backend developer, Python first. Now: building SMM Radar, Telegram analytics, private beta; shipped Flavor Tree for OneIdea 2026 × Efes; studying Software Engineering at KBTU, final years; open to Internships · freelance backend · hackathons; passive SEO · public speaking, several years each."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/protagonist.svg?v=c6e29805"><source media="(prefers-color-scheme: light)" srcset="assets/protagonist-light.svg?v=234504b4"><img src="assets/protagonist.svg?v=c6e29805" width="100%" alt="Prologue: a portrait of Klim Kassymkhan. Backend developer, Python first. Now: building SMM Radar, Telegram analytics, private beta; shipped Flavor Tree for OneIdea 2026 × Efes; studying Software Engineering at KBTU, final years; open to Internships · freelance backend · hackathons; also SEO · public speaking, several years each."></picture>
 
 <br>
 
@@ -47,13 +47,9 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-daisho.svg?v=bd1692f5"><source media="(prefers-color-scheme: light)" srcset="assets/divider-daisho-light.svg?v=54b346cb"><img src="assets/divider-daisho.svg?v=bd1692f5" width="100%" alt="Daisho: a katana over a wakizashi resting on a black lacquer sword stand with gold maki-e"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-04.svg?v=237f36d7"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-04-light.svg?v=289adef4"><img src="assets/chapter-04.svg?v=237f36d7" width="100%" alt="Chapter 4: contribution log"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/chapter-04.svg?v=c33252d8"><source media="(prefers-color-scheme: light)" srcset="assets/chapter-04-light.svg?v=9eea5165"><img src="assets/chapter-04.svg?v=c33252d8" width="100%" alt="Chapter 4: contribution log"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/contrib-log.svg?v=7bdd4cbf"><source media="(prefers-color-scheme: light)" srcset="assets/contrib-log-light.svg?v=4fdcfa7d"><img src="assets/contrib-log.svg?v=7bdd4cbf" width="100%" alt="Contribution log, snapshot September 2026: heatmap of 2026 with 484 contributions, a spike in April during Decentrathon 5.0 and a 60 day streak from July 22 to September 19. 18 public repositories."></picture>
-
-<p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/overloooooord/overloooooord/output/turtle-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/overloooooord/overloooooord/output/turtle.svg"><img src="https://raw.githubusercontent.com/overloooooord/overloooooord/output/turtle-dark.svg" width="100%" alt="A ninja turtle with a red headband walks the contribution calendar and cuts every day with commits"></picture>
-</p>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/overloooooord/overloooooord/output/log-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/overloooooord/overloooooord/output/log.svg"><img src="https://raw.githubusercontent.com/overloooooord/overloooooord/output/log-dark.svg" width="100%" alt="Contribution log, updated daily: contributions in the last year, the longest streak, public repositories, and a ninja turtle that walks the calendar and cuts every day with commits"></picture>
 
 <br>
 
