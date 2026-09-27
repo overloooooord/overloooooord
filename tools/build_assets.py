@@ -207,9 +207,12 @@ def ribbon(T):
     write('ribbon-status', T, D.svg(W, H, '\n'.join(b), 'Status: ' + ', '.join(t.lower() for t in TICKER), style))
 
 # ------------------------------------------------------------------ chapter strips
-def chapter(T, name, kanji, title, sub, label):
+def chapter(T, name, kanji, title, sub, label, fold=False):
+    """fold: the strip is the clickable summary of a collapsed <details>, so it carries an expand button on the right"""
     W, H = 900, 56; D = Doc(); dark = T['name'] == 'dark'
-    style = '@keyframes cut{0%{transform:translateX(-160px)}100%{transform:translateX(1100px)}}.cut{animation:cut 1.1s cubic-bezier(.3,0,.2,1) .2s both;opacity:.9}'
+    style = ('@keyframes cut{0%{transform:translateX(-160px)}100%{transform:translateX(1100px)}}.cut{animation:cut 1.1s cubic-bezier(.3,0,.2,1) .2s both;opacity:.9}'
+             '@keyframes bob{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(3px)}}.bob{animation:bob 2.4s ease-in-out 1.4s infinite}')
+    sub_x = 832 if fold else 872
     b = [f'<rect width="{W}" height="{H}" fill="{T["panel"]}"/>',
          f'<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{AKA}" stop-opacity="0"/><stop offset=".5" stop-color="{T["hot"]}"/><stop offset="1" stop-color="{AKA}" stop-opacity="0"/></linearGradient></defs>',
          f'<g transform="skewX(-28)"><rect class="cut" x="0" y="-6" width="1.6" height="68" fill="url(#cg)"/></g>',
@@ -218,8 +221,11 @@ def chapter(T, name, kanji, title, sub, label):
          D.text(title, 160, 35, 16, 'sans900', T['text'], ls=5)]
     tw = 160 + D.measure(title, 16, 'sans900', 5)
     ls = 2
-    while 872 - D.measure(sub, 11.5, 'mono500', ls) < tw + 28 and ls > 0: ls -= .25
-    b.append(D.text(sub, 872, 34, 11.5, 'mono500', T['muted'], ls=ls, anchor='end'))
+    while sub_x - D.measure(sub, 11.5, 'mono500', ls) < tw + 28 and ls > 0: ls -= .25
+    b.append(D.text(sub, sub_x, 34, 11.5, 'mono500', T['muted'], ls=ls, anchor='end'))
+    if fold:
+        b.append(f'<rect x="847.5" y="13.5" width="33" height="29" rx="3" fill="{T["bg"]}" stroke="{T["line"] if dark else INK}" stroke-width="1.5" stroke-opacity="{1 if dark else .4}"/>'
+                 f'<path class="bob" d="M857 25 L864 32 L871 25" fill="none" stroke="{T["akatext"]}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
     b.append(f'<rect x="0" y="{H-2}" width="{W}" height="2" fill="{AKA}"/>')
     b.append(f'<rect x="0" y="0" width="{W}" height="1" fill="{T["text"]}" opacity="{.18 if dark else .9}"/>')
     write(f'chapter-{name}', T, D.svg(W, H, '\n'.join(b), label, style))
@@ -516,10 +522,10 @@ if __name__ == '__main__':
         if want('ribbon'): ribbon(T)
         if want('stats'): flavor_stats(T)
         if want('chapters'):
-            chapter(T, '01', '第一話', 'ARSENAL', 'LANGUAGES  ·  BACKEND  ·  FRONTEND  ·  AUTOMATION  ·  INFRA', 'Chapter 1: arsenal')
-            chapter(T, '02', '第二話', 'QUEST LOG', 'FLAVOR TREE  ·  SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 2: quest log')
-            chapter(T, '03', '第三話', 'WORKSHOP', 'AUTOMATION  ·  IN THE LAB  ·  FRONTEND', 'Chapter 3: workshop')
-            chapter(T, '04', '第四話', 'CONTRIBUTION LOG', 'LIVE  ·  UPDATED DAILY', 'Chapter 4: contribution log')
+            chapter(T, '01', '第一話', 'ARSENAL', 'LANGUAGES  ·  BACKEND  ·  FRONTEND  ·  AUTOMATION  ·  INFRA', 'Chapter 1: arsenal', fold=True)
+            chapter(T, '02', '第二話', 'QUEST LOG', 'FLAVOR TREE  ·  SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 2: quest log', fold=True)
+            chapter(T, '03', '第三話', 'WORKSHOP', 'AUTOMATION  ·  IN THE LAB  ·  FRONTEND', 'Chapter 3: workshop', fold=True)
+            chapter(T, '04', '第四話', 'CONTRIBUTION LOG', 'LIVE  ·  UPDATED DAILY', 'Chapter 4: contribution log', fold=True)
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):
             quest_smm(T)
