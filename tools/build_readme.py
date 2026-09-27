@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
 """Writes ../README.md from the assets in ../assets. Dark/light twins go through <picture>; neutral SVGs are plain <img>."""
 from pathlib import Path
-import re
+import hashlib, re
 OUT = Path(__file__).resolve().parent.parent / 'README.md'
 TURTLE = 'https://raw.githubusercontent.com/overloooooord/overloooooord/output/turtle'
 
 def alt_of(name):
     return re.search(r'aria-label="([^"]+)"', (OUT.parent / 'assets' / f'{name}.svg').read_text()).group(1)
 
+def src(name):
+    """asset URL with a content hash, so browsers drop their cached copy as soon as the file changes"""
+    return f'assets/{name}.svg?v={hashlib.md5((OUT.parent / "assets" / f"{name}.svg").read_bytes()).hexdigest()[:8]}'
+
 def pic(name, width='100%', alt=None, href=None):
     alt = alt or alt_of(name)
-    s = (f'<picture><source media="(prefers-color-scheme: dark)" srcset="assets/{name}.svg"><source media="(prefers-color-scheme: light)" '
-         f'srcset="assets/{name}-light.svg"><img src="assets/{name}.svg" width="{width}" alt="{alt}"></picture>')
+    s = (f'<picture><source media="(prefers-color-scheme: dark)" srcset="{src(name)}"><source media="(prefers-color-scheme: light)" '
+         f'srcset="{src(name + "-light")}"><img src="{src(name)}" width="{width}" alt="{alt}"></picture>')
     return f'<a href="{href}">{s}</a>' if href else s
 
 def img(name, width='100%', alt=None, href=None):
-    s = f'<img src="assets/{name}.svg" width="{width}" alt="{alt or alt_of(name)}">'
+    s = f'<img src="{src(name)}" width="{width}" alt="{alt or alt_of(name)}">'
     return f'<a href="{href}">{s}</a>' if href else s
 
 FT = 'https://flavor-tree-frontend.vercel.app'
