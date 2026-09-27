@@ -36,7 +36,8 @@ MONO = {400: '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Regular
 # every CJK character any asset uses; the build fails loudly if a glyph is missing
 CJK = ('クリム赤開発者バックエンド第一二三四五六零話次回予告キャラクターシートステータス記録スキル'
        '電波選牧犬学麦つづく選手権公開版スマホ連続日印依頼修行道具主力常用実戦ゴドピッ持ち物'
-       '年月火水木金土本番研究所験人顔差計七自動化ウザブメルボト運用特技券斬刀銘柄会計美術忠臣入')
+       '年月火水木金土本番研究所験人顔差計七自動化ウザブメルボト運用特技券斬刀銘柄会計美術忠臣入'
+       '主人公侍狐今八武器庫城弓忍蔵空')
 LATIN = ''.join(chr(c) for c in range(0x20, 0x7f)) + '·×→←↓↑°…’'
 
 

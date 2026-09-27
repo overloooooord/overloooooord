@@ -765,9 +765,9 @@ if __name__ == '__main__':
         if want('stats'): flavor_stats(T)
         if want('chapters'):
             chapter(T, '01', '第一話', 'CHARACTER SHEET', 'WHO IS PLAYING', 'Chapter 1: character sheet')
-            chapter(T, '02', '第二話', 'FLAVOR TREE', 'FLAGSHIP  ·  ONEIDEA CHAMPIONSHIP 2026 × EFES KAZAKHSTAN', 'Chapter 2: Flavor Tree')
-            chapter(T, '03', '第三話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 3: side quests')
-            chapter(T, '07', '第七話', 'CONTRIBUTION LOG', SNAP, 'Chapter 7: contribution log')
+            chapter(T, '03', '第三話', 'FLAVOR TREE', 'FLAGSHIP  ·  ONEIDEA CHAMPIONSHIP 2026 × EFES KAZAKHSTAN', 'Chapter 3: Flavor Tree')
+            chapter(T, '04', '第四話', 'SIDE QUESTS', 'SMM RADAR  ·  INVISION U  ·  IGTG', 'Chapter 4: side quests')
+            chapter(T, '08', '第八話', 'CONTRIBUTION LOG', SNAP, 'Chapter 8: contribution log')
             chapter(T, 'next', '次回予告', 'NEXT EPISODE', 'TELEGRAM  ·  INSTAGRAM  ·  TIKTOK', 'Next episode: contact')
         if want('quests'):
             quest_smm(T)
