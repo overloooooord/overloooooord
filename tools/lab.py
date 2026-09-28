@@ -58,7 +58,7 @@ def workshop(T):
     b.append(f'<g clip-path="url(#tc)"><g class="gl"><rect x="-120" y="0" width="80" height="{H}" fill="url(#glg)" transform="skewX(-20)"/></g></g>')
     fy = H - 20
     b.append(f'<circle class="hot" cx="{GX0 + 5}" cy="{fy - 4}" r="4" fill="{T["hot"]}"/>'
-             + D.text('IN PROGRESS · SEPTEMBER 2026', GX0 + 18, fy, 10.5, 'mono700', T['muted'], ls=2.5)
+             + D.text('IN PROGRESS', GX0 + 18, fy, 10.5, 'mono700', T['muted'], ls=2.5)
              + D.text('工房', GX1, fy + 1, 12, 'sans700', T['akatext'], anchor='end')
              + D.text('PRIVATE REPOS', GX1 - D.measure('工房', 12, 'sans700') - 12, fy, 10.5, 'mono700', T['muted'], ls=2.5, anchor='end'))
     b.append(frame(W, H, T))

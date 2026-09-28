@@ -20,7 +20,7 @@ def icon_path(slug):
 # ------------------------------------------------------------------ prologue: the protagonist
 NOW = [('BUILDING', 'SMM Radar, Telegram analytics, private beta'),
        ('SHIPPED', 'Flavor Tree for OneIdea 2026 × Efes'),
-       ('STUDYING', 'Software Engineering at KBTU, final years'),
+       ('STUDYING', 'Software Engineering, KBTU · 3rd year, class of 2028'),
        ('OPEN TO', 'Internships · freelance backend · hackathons'),
        ('ALSO', 'SEO · public speaking, several years each')]
 BACKDROP = 'sun'   # behind the photo: 'sun' (the hero's red sun on dark), 'dark' or 'red'; the photo's look is set in variants/face/print.py
@@ -53,24 +53,25 @@ def protagonist(T, backdrop=BACKDROP, fig=None, name='protagonist'):
     sx, sy, ss = 858, 44, 34
     b.append(f'<g class="rv8"><rect x="{sx - ss/2}" y="{sy - ss/2}" width="{ss}" height="{ss}" rx="3" fill="{AKA}"/>'
              + D.text('侍', sx, sy + 8.5, 23, 'sans900', PAPER, anchor='middle') + '</g>')
-    X = 440; VX = 548
-    kw = D.measure('第零話', 14, 'sans900', 1)
-    b.append('<g class="rv0">' + D.text('第零話', X, 64, 14, 'sans900', T['akatext'], ls=1)
-             + D.text('PROLOGUE', X + kw + 14, 63, 11.5, 'mono700', T['akatext'], ls=3.2) + '</g>')
-    b.append('<g class="rv1">' + D.text('Backend developer.', X - 1, 122, 34, 'sans900', T['text']) + '</g>')
-    b.append('<g class="rv2">' + D.text('Python first.', X - 1, 162, 34, 'sans900', T['akatext']) + '</g>')
-    b.append(f'<g class="rv3"><rect x="{X}" y="190" width="420" height="2" fill="url(#rule)"/></g>')
-    b.append('<g class="rv3">' + D.text('NOW', X, 232, 12, 'mono700', T['text'], ls=4) + D.text('今', X + 48, 233, 14, 'sans900', T['akatext'])
-             + f'<circle class="live" cx="{X + 76}" cy="228" r="4" fill="{T["hot"]}"/>' + '</g>')
-    y = 268
+    X = 440; RW = W - 18 - X                   # right column; type is large enough to survive the phone's 0.4x scale
+    kw = D.measure('第零話', 15, 'sans900', 1)
+    b.append('<g class="rv0">' + D.text('第零話', X, 52, 15, 'sans900', T['akatext'], ls=1)
+             + D.text('PROLOGUE', X + kw + 14, 51, 12.5, 'mono700', T['akatext'], ls=3.2) + '</g>')
+    b.append('<g class="rv1">' + D.text('Backend developer.', X - 1, 102, 38, 'sans900', T['text']) + '</g>')
+    b.append('<g class="rv2">' + D.text('Python first.', X - 1, 146, 38, 'sans900', T['akatext']) + '</g>')
+    b.append(f'<g class="rv3"><rect x="{X}" y="170" width="420" height="2" fill="url(#rule)"/></g>')
+    b.append('<g class="rv3">' + D.text('NOW', X, 204, 13, 'mono700', T['text'], ls=4) + D.text('今', X + 52, 205, 15, 'sans900', T['akatext'])
+             + f'<circle class="live" cx="{X + 82}" cy="200" r="4.5" fill="{T["hot"]}"/>' + '</g>')
+    VS = 18
+    assert all(D.measure(v, VS, 'sans500') < RW for _, v in NOW), 'a NOW line is too long for the column'
+    y = 228
     for i, (lab, val) in enumerate(NOW):
-        assert D.measure(val, 14, 'sans500') < W - 18 - VX, (val, D.measure(val, 14, 'sans500'))
-        b.append(f'<g class="rv{4 + min(i, 3)}">' + D.text(lab, X, y, 10.5, 'mono700', T['akatext'], ls=2.5)
-                 + D.text(val, VX, y + .5, 14, 'sans500', T['text'], opacity=.94)
-                 + f'<rect x="{X}" y="{y + 13}" width="{W - 18 - X}" height="1" fill="{T["line"]}"/>' + '</g>')
-        y += 34
+        b.append(f'<g class="rv{4 + min(i, 3)}">' + D.text(lab, X, y, 11, 'mono700', T['akatext'], ls=2.5)
+                 + D.text(val, X, y + 22, VS, 'sans500', T['text'], opacity=.95)
+                 + (f'<rect x="{X}" y="{y + 31}" width="{RW}" height="1" fill="{T["line"]}"/>' if i < len(NOW) - 1 else '') + '</g>')
+        y += 44
     b.append(frame(W, H, T))
-    alt = ('Prologue: a portrait of Klim Kassymkhan. Backend developer, Python first. Now: '
+    alt = ('Prologue: a portrait of Yeraly Abutalifuly. Backend developer, Python first. Now: '
            + '; '.join(f'{l.lower()} {v}' for l, v in NOW) + '.')
     write(name, T, D.svg(W, H, '\n'.join(b), alt, style))
 
